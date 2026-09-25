@@ -230,8 +230,8 @@ hi, i'm <u class="decoration-pink-400 font-bold">mihika</u>! i'm a 9th grader ta
 <section id="chat-section" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8">
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
 <div>
-<h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">student chatroom</h2>
-<p class="text-xs text-gray-500">ask french questions, get homework help, or chat with other learners!</p>
+<h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">group chat en français!</h2>
+<p class="text-xs text-gray-500">ask french, get help, or chat with other members!</p>
 </div>
 <button onclick="toggleChatroomModal()" class="btn-secondary-scrapbook px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 shrink-0">
 <i class="fa-solid fa-comments text-pink-400"></i>
@@ -338,15 +338,15 @@ hi, i'm <u class="decoration-pink-400 font-bold">mihika</u>! i'm a 9th grader ta
 <form id="form-new-account" onsubmit="handleNewAccountSubmit(event)" class="space-y-3 text-xs">
 <div>
 <label class="block font-bold text-gray-600 mb-1">full name</label>
-<input type="text" id="new-name" placeholder="e.g. Marie Dupont" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+<input type="text" id="new-name" placeholder="e.g. mihika yashwanth" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
 </div>
 <div>
 <label class="block font-bold text-gray-600 mb-1">username</label>
-<input type="text" id="new-username" placeholder="e.g. marie_french" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+<input type="text" id="new-username" placeholder="e.g. mihi_french" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
 </div>
 <div>
 <label class="block font-bold text-gray-600 mb-1">email address</label>
-<input type="email" id="new-email" placeholder="e.g. marie@example.com" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+<input type="email" id="new-email" placeholder="e.g. mihika@example.com" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
 </div>
 <div>
 <label class="block font-bold text-gray-600 mb-1">language proficiency level</label>
@@ -522,8 +522,6 @@ let chatMessages = [
 
 let currentUser = null;
 let registeredLearners = [
-  { name: "Marie Dupont", username: "marie_french", email: "marie@example.com", level: "Elementary (A2)", bio: "Loving french worksheets!", credits: 45 },
-  { name: "Lucas Bernard", username: "lucas_b", email: "lucas@example.com", level: "Intermediate (B1)", bio: "Studying for IGCSE exams.", credits: 70 }
 ];
 
 let mainCategories = [
