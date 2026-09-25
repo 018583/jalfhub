@@ -1,1127 +1,1125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jour à la fois | my free french resource hub</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Scrapbook Aesthetic Styles -->
-    <style>
-        :root {
-            --bg-pink: #fff0f2;
-            --border-pink: #e8d0d5;
-            --accent-pink: #e5b3be;
-            --dark-accent: #a69598;
-            --badge-dark: #2e353b;
-            --cream-bg: #faf4e1;
-            --cream-border: #dec38a;
-            --text-dark: #544e4f;
-        }
-
-        body {
-            background-color: var(--bg-pink);
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--text-dark);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #fff0f2;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e5b3be;
-            border-radius: 4px;
-        }
-
-        .scrapbook-paper {
-            background-color: #ffffff;
-            box-shadow: 8px 8px 0px rgba(219, 178, 186, 0.4);
-            border: 2px dashed var(--border-pink);
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .scrapbook-title {
-            font-family: 'Arial Black', Gadget, sans-serif;
-            color: #ffffff;
-            text-shadow: 
-                -2px -2px 0 #bfaeb2,  
-                 2px -2px 0 #bfaeb2,
-                -2px  2px 0 #bfaeb2,
-                 2px  2px 0 #bfaeb2,
-                 4px  4px 0px rgba(0,0,0,0.08);
-            text-transform: lowercase;
-            line-height: 0.95;
-        }
-
-        .scrapbook-h2 {
-            font-family: 'Arial Black', Gadget, sans-serif;
-            color: var(--accent-pink); 
-            -webkit-text-stroke: 1px #a69598;
-            text-transform: lowercase;
-        }
-
-        .translation-badge {
-            background-color: var(--cream-bg);
-            border: 1px dashed var(--cream-border);
-            color: #7a684d;
-            transform: rotate(-1deg);
-        }
-
-        .btn-scrapbook {
-            background-color: var(--accent-pink);
-            color: white;
-            border: 2px solid var(--dark-accent);
-            box-shadow: 3px 3px 0px var(--dark-accent);
-            transition: all 0.15s ease-in-out;
-        }
-
-        .btn-scrapbook:hover {
-            transform: translate(1px, 1px);
-            box-shadow: 2px 2px 0px var(--dark-accent);
-            background-color: #dfa4b1;
-        }
-
-        .btn-scrapbook:active {
-            transform: translate(3px, 3px);
-            box-shadow: 0px 0px 0px var(--dark-accent);
-        }
-
-        .btn-secondary-scrapbook {
-            background-color: var(--cream-bg);
-            color: #7a684d;
-            border: 2px solid var(--cream-border);
-            box-shadow: 3px 3px 0px var(--cream-border);
-            transition: all 0.15s ease-in-out;
-        }
-
-        .btn-secondary-scrapbook:hover {
-            transform: translate(1px, 1px);
-            box-shadow: 2px 2px 0px var(--cream-border);
-            background-color: #f5ebcf;
-        }
-
-        .tab-btn.active {
-            background-color: var(--accent-pink);
-            color: white;
-            border-color: var(--dark-accent);
-            transform: rotate(-1deg);
-        }
-
-        .sub-tab-btn.active {
-            background-color: #e5b3be;
-            color: white;
-            border-color: #a69598;
-        }
-
-        .edit-mode-active [contenteditable="true"] {
-            outline: 2px dashed #3b82f6 !important;
-            background-color: rgba(239, 246, 255, 0.7);
-            border-radius: 4px;
-            padding: 2px 4px;
-        }
-    </style>
-</head>
-<body class="py-6 px-3 sm:px-6 min-h-screen flex justify-center items-start">
-
-    <div class="scrapbook-paper w-full max-w-4xl p-4 sm:p-8 md:p-10 my-4">
-
-        <!-- TOP NAVIGATION BAR -->
-        <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b-2 border-dashed border-[#e8d0d5] pb-5">
-            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
-                <div id="user-badge-container" class="flex items-center gap-2 bg-[#f7f1f2] border border-[#e8d0d5] px-3 py-1.5 rounded-full text-xs">
-                    <span id="user-avatar-icon" class="w-6 h-6 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xs">m</span>
-                    <span id="username-display" class="font-bold text-[#544e4f]">mihika (owner)</span>
-                </div>
-                <button id="auth-btn" onclick="toggleAuthModal()" class="text-xs underline text-[#a69598] hover:text-[#544e4f] font-bold">
-                    <i class="fa-solid fa-right-to-bracket mr-1"></i>login / account
-                </button>
-            </div>
-
-            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                <div id="credits-badge" class="translation-badge px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-star text-amber-500 text-sm"></i>
-                    <span>credits:</span>
-                    <span id="credits-balance" class="text-base text-pink-600 font-black">0</span>
-                    <span class="text-[10px] text-gray-500 font-normal">pts</span>
-                </div>
-
-                <!-- CREATOR ONLY BUTTON -->
-                <button id="editor-toggle-btn" onclick="toggleEditMode()" class="btn-secondary-scrapbook px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <span id="editor-toggle-text">edit site (owner)</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- TITLE & SUBTITLE HEADER -->
-        <div class="text-center mb-6">
-            <h1 class="scrapbook-title text-4xl sm:text-5xl md:text-6xl mb-2" contenteditable="false" data-editable-id="site-title">
-                jour à la fois
-            </h1>
-            <div class="text-[#7a684d] text-xs sm:text-sm font-bold tracking-wider mb-3" contenteditable="false" data-editable-id="site-translation">
-                translation: one day at a time
-            </div>
-            
-            <div class="bg-[#f7f1f2] p-3 rounded-2xl text-center text-xs sm:text-sm text-[#595354] max-w-xl mx-auto border border-[#e8d0d5]" contenteditable="false" data-editable-id="site-intro-tag">
-                french worksheets, topic-wise resources and grammar help, for students–and by a student! &lt;3
-            </div>
-        </div>
-
-        <!-- HIGHLIGHTED FREE RESOURCES NOTICE BANNER -->
-        <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-3.5 mb-8 text-center text-xs font-bold text-[#7a684d] shadow-sm transform -rotate-1">
-            <span class="bg-[#e5b3be] text-white px-2 py-0.5 rounded text-[10px] mr-1 uppercase tracking-wide">notice</span>
-            <span contenteditable="false" data-editable-id="highlighted-notice-text">
-                ✦ these are <u>100% free</u> worksheets &amp; language tips! if you want custom / personalized worksheets made for you, check out my rates and check the premium worksheets out below ! ✦
-            </span>
-        </div>
-
-        <!-- EDIT MODE CONTROL PANEL -->
-        <div id="edit-mode-banner" class="hidden mb-6 p-4 bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg text-xs text-blue-800">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-blue-500 text-base"></i>
-                    <div>
-                        <strong>owner edit mode enabled!</strong>
-                        <p class="text-[11px] text-blue-600">click text to edit directly. edit full attachments or manage categories anytime.</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="openResourceModal()" class="bg-blue-600 text-white px-3 py-1.5 rounded font-bold hover:bg-blue-700">
-                        <i class="fa-solid fa-plus mr-1"></i>attach pdf / resource
-                    </button>
-                    <button onclick="saveSiteChanges()" class="bg-emerald-600 text-white px-3 py-1.5 rounded font-bold hover:bg-emerald-700">
-                        <i class="fa-solid fa-floppy-disk mr-1"></i>save layout
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABOUT ME & CREDENTIALS SECTION -->
-        <section class="mb-10 bg-white p-5 border-2 border-dashed border-[#e8d0d5] rounded-xl relative">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3">
-                <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">about me &amp; credentials</h2>
-                <a id="rates-btn-link" href="https://jouuralafois.netlify.app" target="_blank" class="btn-secondary-scrapbook px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2">
-                    <span>see rates &amp; more...</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                </a>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center gap-5">
-                <div class="flex-1 text-xs sm:text-sm leading-relaxed text-[#544e4f]">
-                    <p contenteditable="false" data-editable-id="about-bio-text">
-                        hi, i'm <u class="decoration-pink-400 font-bold">mihika</u>! i'm a 9th grader taking IGCSE french, and i've BEEN knowing about how annoying it is when you've finished all your homework and then your french book stares up at you like a demon rising from the ashes. <b>learning french shouldn't make you <i>or</i> your bank account cry!</b>
-                    </p>
-                </div>
-
-                <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] p-3 rounded-xl shadow-sm text-center transform rotate-2 shrink-0 min-w-[160px]">
-                    <i class="fa-solid fa-award text-3xl text-[#e5b3be] mb-1"></i>
-                    <div class="text-xs font-bold text-[#7a684d] uppercase">delf a2 certified</div>
-                    <div class="text-[10px] text-gray-500">passed with merit ♡</div>
-                    <span class="inline-block mt-1 bg-[#e5b3be] text-white text-[9px] px-2 py-0.5 rounded-full font-bold">b1 in progress!</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- STUDENT CHATROOM PREVIEW SECTION -->
-        <section id="chat-section" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
-                <div>
-                    <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">student chatroom</h2>
-                    <p class="text-xs text-gray-500">ask french questions, get homework help, or chat with other learners!</p>
-                </div>
-                <button onclick="toggleChatroomModal()" class="btn-secondary-scrapbook px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-comments text-pink-400"></i>
-                    <span>expand chatroom ↗</span>
-                </button>
-            </div>
-
-            <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-4 shadow-inner relative">
-                <div class="flex justify-between items-center mb-3 pb-2 border-b border-dashed border-[#dec38a]">
-                    <span class="text-[11px] font-bold text-[#7a684d] uppercase tracking-wide flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        recent community chatter (latest 2 messages)
-                    </span>
-                    <span class="text-[10px] text-gray-500">public space</span>
-                </div>
-
-                <div id="chat-preview-container" class="space-y-2.5 mb-3">
-                    <!-- Dynamic preview rendered via JS -->
-                </div>
-
-                <div class="pt-2 border-t border-dashed border-[#dec38a] flex justify-between items-center">
-                    <span class="text-[11px] text-gray-500 italic">want to join the conversation?</span>
-                    <button onclick="toggleChatroomModal()" class="btn-scrapbook px-4 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5">
-                        <span>see full chatroom &amp; reply...</span>
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- RESOURCE HUB SECTION -->
-        <section id="resources" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                <div>
-                    <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">free resource hub</h2>
-                    <p class="text-xs text-gray-500">download pdfs, study grammar, and earn credits for every worksheet!</p>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="requestSubcategoryPrompt()" class="btn-secondary-scrapbook px-3 py-2 text-xs font-bold rounded-md flex items-center gap-1">
-                        <i class="fa-solid fa-paper-plane text-xs"></i>
-                        <span>request subcategory</span>
-                    </button>
-
-                    <!-- CREATOR ONLY BUTTON -->
-                    <button onclick="openResourceModal()" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded-md flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
-                        <span>+ attach pdf / resource</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- MAIN CATEGORY TABS -->
-            <div id="main-category-tabs-container" class="flex flex-wrap gap-2 mb-3">
-                <!-- Dynamic Main Tabs Render Here -->
-            </div>
-
-            <!-- DYNAMIC SUBCATEGORY FILTER PILLS -->
-            <div id="subcategory-filters-container" class="flex flex-wrap gap-1.5 mb-6 hidden">
-                <!-- Subcategory pills render here via JavaScript -->
-            </div>
-
-            <!-- DYNAMIC ATTACHED RESOURCE CARDS CONTAINER -->
-            <div id="resource-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Attached resources display dynamically here -->
-            </div>
-        </section>
-
-        <footer class="mt-12 text-center text-xs text-gray-500">
-            <p>© 2026 jour à la fois — Un jour à la fois, une leçon à la fois.</p>
-        </footer>
-    </div>
-
-    <!-- MODAL: Full Student Chatroom -->
-    <div id="chat-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white flex flex-col h-[500px]">
-            <button onclick="toggleChatroomModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            
-            <h3 class="scrapbook-h2 text-2xl text-center mb-1">student chatroom</h3>
-            <p class="text-xs text-center text-gray-500 mb-4">ask questions and help fellow french learners!</p>
-
-            <div id="full-chat-messages" class="flex-1 overflow-y-auto space-y-3 p-3 bg-[#faf4e1] rounded-lg border border-[#dec38a] mb-4">
-                <!-- All chat messages will be inserted here -->
-            </div>
-
-            <form onsubmit="postChatMessage(event)" class="flex gap-2">
-                <input type="text" id="chat-input" placeholder="type a message..." required class="flex-1 px-3 py-2 text-xs border border-[#e8d0d5] rounded">
-                <button type="submit" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded">send</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: User Auth Account Signup & Creator Login -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white">
-            <button onclick="toggleAuthModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            
-            <h3 class="scrapbook-h2 text-2xl text-center mb-1">login / account</h3>
-            <p class="text-xs text-center text-gray-500 mb-4">enter details to log in as a student or creator</p>
-
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">username</label>
-                    <input type="text" id="auth-username" placeholder="e.g. claire_french9 or mihika" required class="w-full px-3 py-2 text-xs border border-[#e8d0d5] rounded">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">password</label>
-                    <input type="password" id="auth-password" placeholder="enter password" class="w-full px-3 py-2 text-xs border border-[#e8d0d5] rounded">
-                    <span class="text-[10px] text-gray-400">Owner password required only for mihika account.</span>
-                </div>
-                
-                <button type="submit" class="btn-scrapbook w-full py-2.5 text-xs font-bold rounded mt-2">
-                    log in
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: Full Attachment Uploader & Editor -->
-    <div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white my-8">
-            <button onclick="closeResourceModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            
-            <h3 id="res-modal-heading" class="text-3xl font-black text-center text-[#d2a3ad] tracking-wide mb-0">attach pdf / resource</h3>
-            <p class="text-xs text-center text-gray-500 mb-5">manage attachment details, assign categories, and edit full details</p>
-
-            <form id="upload-resource-form" onsubmit="handleResourceUpload(event)" class="space-y-4 text-xs font-bold text-[#544e4f]">
-                <input type="hidden" id="editing-resource-id" value="">
-
-                <div>
-                    <label class="block mb-1">resource title</label>
-                    <input type="text" id="res-title" placeholder="e.g. food &amp; dining vocab practice" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be]">
-                </div>
-
-                <div class="grid grid-cols-1 gap-3">
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="block">main category</label>
-                            <button type="button" onclick="addNewMainCategoryPrompt()" class="text-[10px] text-pink-600 hover:underline font-bold">
-                                <i class="fa-solid fa-plus"></i> add main
-                            </button>
-                        </div>
-                        <select id="res-category" onchange="updateSubcategoryCheckboxes()" class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md bg-white font-normal text-gray-700 focus:outline-none">
-                            <!-- Dynamic Main Categories rendered via JS -->
-                        </select>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="block">select subsections (check multiple to assign to multiple subsections at once):</label>
-                            <button type="button" onclick="addNewSubcategoryPrompt()" class="text-[10px] text-pink-600 hover:underline font-bold">
-                                <i class="fa-solid fa-plus"></i> add sub
-                            </button>
-                        </div>
-                        <div id="subcategory-checkboxes-container" class="max-h-36 overflow-y-auto p-2.5 border border-[#e8d0d5] rounded-md bg-[#faf4e1] space-y-1.5 font-normal">
-                            <!-- Checkboxes for subsections dynamically populated -->
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block mb-1">short description</label>
-                    <textarea id="res-desc" rows="2" placeholder="brief summary of what students will practice..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be] resize-none"></textarea>
-                </div>
-
-                <div class="bg-[#faf4e1] border border-[#dec38a] rounded-md p-2.5 flex items-center gap-2">
-                    <input type="checkbox" id="res-is-premium" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 border-gray-300">
-                    <label for="res-is-premium" class="cursor-pointer select-none">
-                        mark as 🔒 premium (paid) worksheet
-                    </label>
-                </div>
-
-                <div>
-                    <label class="block mb-1">attach pdf file / document</label>
-                    <div id="drop-zone" onclick="document.getElementById('res-file-input').click()" class="border-2 border-dashed border-[#e8d0d5] bg-[#fff0f2] p-5 text-center rounded-lg cursor-pointer hover:bg-[#fde7eb] transition-all">
-                        <i class="fa-solid fa-file-pdf text-3xl text-[#e5b3be] mb-1"></i>
-                        <p class="text-xs font-bold text-gray-700" id="file-label-text">click or drag &amp; drop pdf here</p>
-                        <p class="text-[10px] text-gray-400 font-normal">supports .pdf, .docx, or images</p>
-                        <input type="file" id="res-file-input" accept=".pdf,.doc,.docx,.png,.jpg" class="hidden" onchange="updateFileName(this)">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block mb-1">or google drive / direct link (optional)</label>
-                    <input type="url" id="res-link" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be]">
-                </div>
-
-                <div class="pt-3 flex gap-3">
-                    <button type="button" onclick="closeResourceModal()" class="flex-1 py-2.5 border border-gray-300 bg-white rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all">
-                        cancel
-                    </button>
-                    <button type="submit" id="res-submit-btn" class="flex-1 py-2.5 bg-[#e5b3be] hover:bg-[#dfa4b1] text-white rounded-md font-bold shadow-sm transition-all">
-                        publish resource
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: Premium Worksheet Purchase Instructions -->
-    <div id="premium-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="scrapbook-paper w-full max-w-md p-6 relative bg-white text-center">
-            <button onclick="closePremiumModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            
-            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <i class="fa-solid fa-lock text-pink-500 text-xl"></i>
-            </div>
-
-            <h3 id="premium-title-display" class="scrapbook-h2 text-2xl mb-1">premium worksheet</h3>
-            <p class="text-xs text-gray-600 mb-5 leading-relaxed">
-                this is a premium/paid worksheet! to gain full access, please send me a direct message on instagram or email me.
-            </p>
-
-            <div class="space-y-3">
-                <a href="https://instagram.com/jouuralafois" target="_blank" class="btn-scrapbook w-full py-2.5 text-xs font-bold rounded flex items-center justify-center gap-2">
-                    <i class="fa-brands fa-instagram text-base"></i>
-                    <span>message on instagram (@jouuralafois)</span>
-                </a>
-
-                <a href="mailto:jouuralafois@gmail.com" class="btn-secondary-scrapbook w-full py-2.5 text-xs font-bold rounded flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-envelope text-base"></i>
-                    <span>send an email (jouuralafois@gmail.com)</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        let chatMessages = [
-            { id: 1, user: "mihika (owner)", text: "bienvenue! welcome to the site. feel free to ask any french questions here or request new subcategories!", isOwner: true }
-        ];
-
-        let currentUser = {
-            username: "mihika (owner)",
-            isOwner: true,
-            credits: 0
-        };
-
-        // Main Categories Data Structure
-        let mainCategories = [
-            { id: "topic", name: "📌 topic worksheets" },
-            { id: "grammar", name: "📐 grammar worksheets" },
-            { id: "tips", name: "💡 tips & newsletter" }
-        ];
-
-        // Dynamic Subcategories Data Structure
-        let subcategories = {
-            topic: [
-                { id: "healthy_lifestyle", name: "🍎 a healthy lifestyle" },
-                { id: "vocab", name: "📖 vocabulary & verbs" },
-                { id: "general_topic", name: "✦ general practice" }
-            ],
-            grammar: [
-                { id: "grammar_rules", name: "✏️ grammar rules" },
-                { id: "tenses", name: "⏳ verb tenses" },
-                { id: "pronouns", name: "💬 pronouns & articles" }
-            ],
-            tips: [
-                { id: "study_tips", name: "💡 study tips & advice" },
-                { id: "newsletter", name: "📰 monthly newsletter" },
-                { id: "exam_prep", name: "🎯 IGCSE / DELF prep" }
-            ]
-        };
-
-        // Attached Resources with Multi-Subsection Array Support
-        let resources = [
-            {
-                id: 1,
-                title: "le passé composé (grammar guide)",
-                category: "grammar",
-                subcategories: ["grammar_rules", "tenses"],
-                desc: "complete guide to past tense conjugation.",
-                fileName: "passe_compose_guide.pdf",
-                link: "",
-                isPremium: false,
-                points: 15,
-                date: "2026-03-20"
-            },
-            {
-                id: 2,
-                title: "la nourriture et les repas (vocab list)",
-                category: "topic",
-                subcategories: ["healthy_lifestyle", "vocab"],
-                desc: "full food and meal vocabulary practice.",
-                fileName: "food_and_dining_vocab.pdf",
-                link: "",
-                isPremium: true,
-                points: 20,
-                date: "2026-03-22"
-            }
-        ];
-
-        let currentCategoryFilter = 'all';
-        let currentSubcategoryFilter = 'all';
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('is_creator') !== 'false') {
-                localStorage.setItem('is_creator', 'true');
-                currentUser.username = "mihika (owner)";
-                currentUser.isOwner = true;
-            }
-            updateUserUI();
-            renderChatMessages();
-            renderMainCategoryTabs();
-            renderResources();
-            updateMainCategoryDropdown();
-        });
-
-        function isCreatorDevice() {
-            return currentUser.isOwner && localStorage.getItem('is_creator') === 'true';
-        }
-
-        function toggleAuthModal() {
-            document.getElementById('auth-modal').classList.toggle('hidden');
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const usernameInput = document.getElementById('auth-username').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('auth-password').value;
-
-            if (usernameInput === "mihika" || usernameInput === "mihika (owner)") {
-                if (passwordInput === "whatdahelliante3008") {
-                    localStorage.setItem('is_creator', 'true');
-                    currentUser.username = "mihika (owner)";
-                    currentUser.isOwner = true;
-                    alert("welcome back mihika! owner privileges active.");
-                } else {
-                    alert("incorrect owner password!");
-                    return;
-                }
-            } else {
-                localStorage.setItem('is_creator', 'false');
-                currentUser.username = usernameInput;
-                currentUser.isOwner = false;
-                alert(`welcome, ${usernameInput}!`);
-            }
-
-            updateUserUI();
-            toggleAuthModal();
-            renderChatMessages();
-            renderMainCategoryTabs();
-            renderResources();
-        }
-
-        function updateUserUI() {
-            document.getElementById('username-display').innerText = currentUser.username;
-            document.getElementById('user-avatar-icon').innerText = currentUser.username.charAt(0).toLowerCase();
-            document.getElementById('credits-balance').innerText = currentUser.credits;
-        }
-
-        function toggleEditMode() {
-            if (!isCreatorDevice()) {
-                alert("access restricted: only mihika on her verified device can edit this site!");
-                return;
-            }
-            const banner = document.getElementById('edit-mode-banner');
-            const isHidden = banner.classList.toggle('hidden');
-            document.body.classList.toggle('edit-mode-active', !isHidden);
-            
-            const editables = document.querySelectorAll('[data-editable-id]');
-            editables.forEach(el => {
-                el.contentEditable = !isHidden;
-            });
-        }
-
-        function openResourceModal() {
-            if (!isCreatorDevice()) {
-                alert("access restricted: only mihika can upload and attach files!");
-                return;
-            }
-            document.getElementById('editing-resource-id').value = "";
-            document.getElementById('res-modal-heading').innerText = "attach pdf / resource";
-            document.getElementById('res-submit-btn').innerText = "publish resource";
-            document.getElementById('upload-resource-form').reset();
-            document.getElementById('file-label-text').innerText = "click or drag & drop pdf here";
-
-            updateMainCategoryDropdown();
-            updateSubcategoryCheckboxes();
-            document.getElementById('resource-modal').classList.remove('hidden');
-        }
-
-        function closeResourceModal() {
-            document.getElementById('resource-modal').classList.add('hidden');
-            document.getElementById('upload-resource-form').reset();
-            document.getElementById('editing-resource-id').value = "";
-            document.getElementById('file-label-text').innerText = "click or drag & drop pdf here";
-        }
-
-        /* --- CATEGORY MANAGEMENT LOGIC --- */
-
-        function addNewMainCategoryPrompt() {
-            if (!isCreatorDevice()) {
-                alert("access restricted: only mihika can add main categories!");
-                return;
-            }
-
-            const catName = prompt("enter new MAIN CATEGORY name (e.g. 🎧 listening practice):");
-            if (catName && catName.trim() !== "") {
-                const catId = catName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                
-                if (mainCategories.some(c => c.id === catId)) {
-                    alert("a main category with this name already exists!");
-                    return;
-                }
-
-                mainCategories.push({ id: catId, name: catName.trim() });
-                subcategories[catId] = [{ id: "general_" + catId, name: "✦ general practice" }];
-
-                renderMainCategoryTabs();
-                updateMainCategoryDropdown();
-                document.getElementById('res-category').value = catId;
-                updateSubcategoryCheckboxes();
-                alert(`main category "${catName.trim()}" added!`);
-            }
-        }
-
-        function addNewSubcategoryPrompt() {
-            if (!isCreatorDevice()) {
-                alert("access restricted: only mihika can add subcategories!");
-                return;
-            }
-
-            const currentCat = document.getElementById('res-category').value;
-            const subName = prompt(`enter new SUB-CATEGORY name for ${currentCat.toUpperCase()}:`);
-            
-            if (subName && subName.trim() !== "") {
-                const newSub = {
-                    id: subName.toLowerCase().replace(/[^a-z0-9]/g, '_'),
-                    name: "✨ " + subName.trim()
-                };
-
-                if (!subcategories[currentCat]) {
-                    subcategories[currentCat] = [];
-                }
-
-                subcategories[currentCat].push(newSub);
-                updateSubcategoryCheckboxes();
-                renderSubcategoryFilters();
-                alert(`subcategory "${subName}" added under ${currentCat}!`);
-            }
-        }
-
-        function editSubcategory(catId, subId) {
-            if (!isCreatorDevice()) return;
-            const sub = (subcategories[catId] || []).find(s => s.id === subId);
-            if (!sub) return;
-
-            const newName = prompt("edit subcategory name:", sub.name);
-            if (newName && newName.trim() !== "") {
-                sub.name = newName.trim();
-                renderSubcategoryFilters();
-                updateSubcategoryCheckboxes();
-                renderResources();
-            }
-        }
-
-        function deleteSubcategory(catId, subId) {
-            if (!isCreatorDevice()) return;
-
-            const hasWorksheets = resources.some(r => r.category === catId && (r.subcategories || []).includes(subId));
-            if (hasWorksheets) {
-                alert("cannot delete this subcategory because it contains active worksheets! please delete or reassign those worksheets first.");
-                return;
-            }
-
-            if (confirm("are you sure you want to delete this subcategory?")) {
-                subcategories[catId] = subcategories[catId].filter(s => s.id !== subId);
-                if (currentSubcategoryFilter === subId) {
-                    currentSubcategoryFilter = 'all';
-                }
-                renderSubcategoryFilters();
-                updateSubcategoryCheckboxes();
-                renderResources();
-            }
-        }
-
-        function updateMainCategoryDropdown() {
-            const catSelect = document.getElementById('res-category');
-            if (!catSelect) return;
-            catSelect.innerHTML = mainCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        }
-
-        function updateSubcategoryCheckboxes(selectedSubs = []) {
-            const currentCat = document.getElementById('res-category').value;
-            const container = document.getElementById('subcategory-checkboxes-container');
-            if (!container) return;
-
-            const list = subcategories[currentCat] || [];
-
-            if (list.length === 0) {
-                container.innerHTML = `<span class="text-xs text-gray-400 italic">no subcategories in this main category. click "+ add sub" above!</span>`;
-                return;
-            }
-
-            container.innerHTML = list.map(s => {
-                const isChecked = selectedSubs.includes(s.id) ? 'checked' : '';
-                return `
-                    <label class="flex items-center gap-2 text-xs text-[#544e4f] cursor-pointer hover:bg-[#f2e7c9] p-1 rounded">
-                        <input type="checkbox" name="res-subcategory-check" value="${s.id}" ${isChecked} class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400">
-                        <span>${s.name}</span>
-                    </label>
-                `;
-            }).join('');
-        }
-
-        function renderMainCategoryTabs() {
-            const container = document.getElementById('main-category-tabs-container');
-            let html = `
-                <button onclick="switchCategory('all', this)" class="tab-btn ${currentCategoryFilter === 'all' ? 'active' : ''} px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] transition-all">
-                    ✨ all resources
-                </button>
-            `;
-
-            html += mainCategories.map(c => `
-                <button onclick="switchCategory('${c.id}', this)" class="tab-btn ${currentCategoryFilter === c.id ? 'active' : ''} px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] bg-[#faf4e1] text-[#7a684d] transition-all">
-                    ${c.name}
-                </button>
-            `).join('');
-
-            if (isCreatorDevice()) {
-                html += `
-                    <button onclick="addNewMainCategoryPrompt()" class="px-3 py-1.5 rounded-md text-xs font-bold border border-dashed border-pink-400 text-pink-600 bg-white hover:bg-pink-50 transition-all">
-                        + add main
-                    </button>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        function switchCategory(category, button) {
-            currentCategoryFilter = category;
-            currentSubcategoryFilter = 'all';
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if (button) button.classList.add('active');
-
-            renderSubcategoryFilters();
-            renderResources();
-        }
-
-        function switchSubcategory(subId) {
-            currentSubcategoryFilter = subId;
-            renderSubcategoryFilters();
-            renderResources();
-        }
-
-        function renderSubcategoryFilters() {
-            const container = document.getElementById('subcategory-filters-container');
-            if (currentCategoryFilter === 'all') {
-                container.classList.add('hidden');
-                return;
-            }
-
-            container.classList.remove('hidden');
-            const subs = subcategories[currentCategoryFilter] || [];
-
-            let html = `
-                <button onclick="switchSubcategory('all')" class="sub-tab-btn ${currentSubcategoryFilter === 'all' ? 'active' : ''} px-2.5 py-1 text-[11px] font-bold rounded-md border border-[#dec38a] bg-[#faf4e1] text-[#7a684d]">
-                    all subcategories
-                </button>
-            `;
-
-            html += subs.map(s => `
-                <div class="inline-flex items-center bg-white rounded-md border border-[#dec38a] px-2 py-1 gap-1">
-                    <button onclick="switchSubcategory('${s.id}')" class="sub-tab-btn ${currentSubcategoryFilter === s.id ? 'font-black text-pink-600' : 'text-[#544e4f]'} text-[11px] font-bold">
-                        ${s.name}
-                    </button>
-                    ${isCreatorDevice() ? `
-                        <button onclick="editSubcategory('${currentCategoryFilter}', '${s.id}')" class="text-[10px] text-blue-500 hover:text-blue-700 ml-1">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button onclick="deleteSubcategory('${currentCategoryFilter}', '${s.id}')" class="text-[10px] text-red-400 hover:text-red-600">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    ` : ''}
-                </div>
-            `).join('');
-
-            if (isCreatorDevice()) {
-                html += `
-                    <button onclick="addNewSubcategoryPrompt()" class="px-2 py-1 text-[11px] font-bold rounded-md border border-dashed border-pink-400 text-pink-600 bg-white hover:bg-pink-50">
-                        + add sub
-                    </button>
-                `;
-            }
-
-            container.innerHTML = html;
-        }
-
-        function requestSubcategoryPrompt() {
-            const reqCategory = prompt("which main category? (e.g. topic, grammar, tips):");
-            if (!reqCategory) return;
-            
-            const reqName = prompt("what subcategory name would you like to request?");
-            if (!reqName || reqName.trim() === "") return;
-
-            const requestMsg = `📢 [REQUEST FOR @mihika (owner)]: please add a new subcategory "${reqName.trim()}" under ${reqCategory.toUpperCase()} worksheets!`;
-
-            chatMessages.push({
-                id: Date.now(),
-                user: currentUser.username,
-                text: requestMsg,
-                isOwner: currentUser.isOwner
-            });
-
-            renderChatMessages();
-            alert("your request has been sent to mihika in the student chatroom!");
-            toggleChatroomModal();
-        }
-
-        function updateFileName(input) {
-            const label = document.getElementById('file-label-text');
-            if (input.files && input.files[0]) {
-                label.innerText = input.files[0].name;
-            } else {
-                label.innerText = "click or drag & drop pdf here";
-            }
-        }
-
-        /* --- FULL ATTACHMENT CREATION AND EDITING --- */
-
-        function editResource(resId) {
-            if (!isCreatorDevice()) return;
-
-            const res = resources.find(r => r.id === resId);
-            if (!res) return;
-
-            document.getElementById('editing-resource-id').value = res.id;
-            document.getElementById('res-modal-heading').innerText = "edit full attachment";
-            document.getElementById('res-submit-btn').innerText = "save attachment changes";
-
-            document.getElementById('res-title').value = res.title;
-            document.getElementById('res-category').value = res.category;
-            document.getElementById('res-desc').value = res.desc || "";
-            document.getElementById('res-is-premium').checked = res.isPremium;
-            document.getElementById('res-link').value = res.link || "";
-            document.getElementById('file-label-text').innerText = res.fileName || "click or drag & drop pdf here";
-
-            updateSubcategoryCheckboxes(res.subcategories || []);
-
-            document.getElementById('resource-modal').classList.remove('hidden');
-        }
-
-        function handleResourceUpload(e) {
-            e.preventDefault();
-            if (!isCreatorDevice()) {
-                alert("access restricted!");
-                return;
-            }
-
-            const editingId = document.getElementById('editing-resource-id').value;
-            const title = document.getElementById('res-title').value.trim();
-            const category = document.getElementById('res-category').value;
-
-            // Gather all checked subcategories for multi-subsection attachment
-            const selectedSubCheckboxes = document.querySelectorAll('input[name="res-subcategory-check"]:checked');
-            const selectedSubcategories = Array.from(selectedSubCheckboxes).map(cb => cb.value);
-
-            if (selectedSubcategories.length === 0) {
-                alert("please select at least one subsection for this attachment!");
-                return;
-            }
-
-            const desc = document.getElementById('res-desc') ? document.getElementById('res-desc').value.trim() : "";
-            const isPremium = document.getElementById('res-is-premium').checked;
-            const link = document.getElementById('res-link').value.trim();
-            const fileInput = document.getElementById('res-file-input');
-
-            if (editingId) {
-                // UPDATE EXISTING ATTACHMENT IN FULL
-                const res = resources.find(r => r.id === parseInt(editingId));
-                if (res) {
-                    res.title = title;
-                    res.category = category;
-                    res.subcategories = selectedSubcategories;
-                    res.desc = desc;
-                    res.isPremium = isPremium;
-                    res.points = isPremium ? 20 : 10;
-                    res.link = link;
-                    if (fileInput.files && fileInput.files[0]) {
-                        res.fileName = fileInput.files[0].name;
-                    }
-                }
-                alert("attachment fully updated!");
-            } else {
-                // CREATE NEW ATTACHMENT
-                const fileName = fileInput.files[0] ? fileInput.files[0].name : (link ? "google drive link" : "attached_worksheet.pdf");
-
-                const newResource = {
-                    id: Date.now(),
-                    title: title,
-                    category: category,
-                    subcategories: selectedSubcategories,
-                    desc: desc,
-                    fileName: fileName,
-                    link: link,
-                    isPremium: isPremium,
-                    points: isPremium ? 20 : 10,
-                    date: new Date().toISOString().split('T')[0]
-                };
-
-                resources.unshift(newResource);
-                alert("attachment published successfully across selected subsections!");
-            }
-
-            renderResources();
-            closeResourceModal();
-        }
-
-        function downloadResource(resId) {
-            const res = resources.find(r => r.id === resId);
-            if (!res) return;
-
-            if (res.isPremium) {
-                document.getElementById('premium-title-display').innerText = res.title;
-                document.getElementById('premium-modal').classList.remove('hidden');
-            } else {
-                currentUser.credits += res.points;
-                updateUserUI();
-                if (res.link) {
-                    window.open(res.link, '_blank');
-                } else {
-                    alert(`download started! you earned +${res.points} pts!`);
-                }
-            }
-        }
-
-        function closePremiumModal() {
-            document.getElementById('premium-modal').classList.add('hidden');
-        }
-
-        function deleteResource(resId) {
-            if (!isCreatorDevice()) return;
-            if (confirm("are you sure you want to delete this resource attachment?")) {
-                resources = resources.filter(r => r.id !== resId);
-                renderResources();
-            }
-        }
-
-        function renderResources() {
-            const grid = document.getElementById('resource-cards-grid');
-            
-            let filtered = resources;
-            if (currentCategoryFilter !== 'all') {
-                filtered = filtered.filter(r => r.category === currentCategoryFilter);
-                if (currentSubcategoryFilter !== 'all') {
-                    filtered = filtered.filter(r => (r.subcategories || []).includes(currentSubcategoryFilter));
-                }
-            }
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-8 text-gray-400 text-xs italic bg-white rounded-xl border-2 border-dashed border-[#e8d0d5]">
-                        no attached resources in this section yet!
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(res => {
-                const subNames = (res.subcategories || []).map(subId => {
-                    const found = (subcategories[res.category] || []).find(s => s.id === subId);
-                    return found ? found.name : subId;
-                }).join(', ');
-
-                return `
-                    <div class="bg-white p-4 rounded-xl border-2 border-dashed border-[#e8d0d5] shadow-sm flex flex-col justify-between relative">
-                        <div>
-                            <div class="flex justify-between items-start mb-2 gap-1">
-                                <span class="bg-[#faf4e1] border border-[#dec38a] text-[#7a684d] text-[10px] px-2 py-0.5 rounded font-bold uppercase truncate max-w-[200px]" title="${res.category} • ${subNames}">
-                                    ${res.category} • ${subNames}
-                                </span>
-                                ${res.isPremium ? `
-                                    <span class="text-[10px] text-amber-700 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded flex items-center gap-1 shrink-0">
-                                        <i class="fa-solid fa-lock text-[9px]"></i> premium
-                                    </span>
-                                ` : `
-                                    <span class="text-[10px] text-pink-600 font-bold bg-pink-50 px-2 py-0.5 rounded shrink-0">
-                                        +${res.points} pts
-                                    </span>
-                                `}
-                            </div>
-                            <h3 class="font-bold text-xs text-[#544e4f] mb-1">${res.title}</h3>
-                            ${res.desc ? `<p class="text-[11px] text-gray-500 mb-2">${res.desc}</p>` : ''}
-                            <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-3">
-                                <i class="fa-solid fa-file-pdf text-red-400"></i> ${res.fileName}
-                            </p>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-2 border-t border-dashed border-[#e8d0d5] gap-2">
-                            <button onclick="downloadResource(${res.id})" class="${res.isPremium ? 'btn-secondary-scrapbook' : 'btn-scrapbook'} px-3 py-1.5 text-[11px] font-bold rounded flex-1 flex items-center justify-center gap-1">
-                                ${res.isPremium ? '<i class="fa-solid fa-lock text-[10px]"></i><span>get access</span>' : '<i class="fa-solid fa-download text-[10px]"></i><span>download pdf</span>'}
-                            </button>
-                            ${isCreatorDevice() ? `
-                                <div class="flex items-center gap-1">
-                                    <button onclick="editResource(${res.id})" title="edit attachment fully" class="text-xs text-blue-500 hover:text-blue-700 p-1">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button onclick="deleteResource(${res.id})" title="delete resource" class="text-xs text-red-400 hover:text-red-600 p-1">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function saveSiteChanges() {
-            if (!isCreatorDevice()) return;
-            alert("layout and changes saved successfully!");
-        }
-
-        function toggleChatroomModal() {
-            document.getElementById('chat-modal').classList.toggle('hidden');
-        }
-
-        function postChatMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            chatMessages.push({
-                id: Date.now(),
-                user: currentUser.username,
-                text: text,
-                isOwner: currentUser.isOwner
-            });
-
-            input.value = '';
-            renderChatMessages();
-        }
-
-        function editChatMessage(msgId) {
-            if (!isCreatorDevice()) {
-                alert("only the owner can edit these messages!");
-                return;
-            }
-            const msg = chatMessages.find(m => m.id === msgId);
-            if (!msg) return;
-
-            const newText = prompt("edit your message:", msg.text);
-            if (newText !== null && newText.trim() !== "") {
-                msg.text = newText.trim();
-                renderChatMessages();
-            }
-        }
-
-        function renderChatMessages() {
-            const previewContainer = document.getElementById('chat-preview-container');
-            const fullContainer = document.getElementById('full-chat-messages');
-
-            const recent = chatMessages.slice(-2);
-            previewContainer.innerHTML = recent.map(msg => `
-                <div class="bg-white p-2.5 rounded-lg border border-[#dec38a] text-xs flex justify-between items-center">
-                    <div>
-                        <span class="font-bold ${msg.isOwner ? 'text-pink-600' : 'text-[#2e353b]'}">${msg.user}:</span> ${msg.text}
-                    </div>
-                </div>
-            `).join('');
-
-            fullContainer.innerHTML = chatMessages.map(msg => `
-                <div class="bg-white p-2.5 rounded-lg border border-[#dec38a] text-xs flex justify-between items-center gap-2">
-                    <div>
-                        <span class="font-bold ${msg.isOwner ? 'text-pink-600' : 'text-[#2e353b]'}">${msg.user}:</span> ${msg.text}
-                    </div>
-                    ${msg.isOwner && isCreatorDevice() ? `
-                        <button onclick="editChatMessage(${msg.id})" class="text-[10px] text-blue-500 underline hover:text-blue-700 shrink-0">
-                            edit
-                        </button>
-                    ` : ''}
-                </div>
-            `).join('');
-
-            fullContainer.scrollTop = fullContainer.scrollHeight;
-        }
-    </script>
-</body>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>jour à la fois | my free french resource hub</title> <!-- Tailwind CSS CDN --> 
+<script src="https://cdn.tailwindcss.com"></script> <!-- Font Awesome Icons --> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Custom Scrapbook Aesthetic Styles --> 
+<style> 
+:root { --bg-pink: #fff0f2; --border-pink: #e8d0d5; --accent-pink: #e5b3be; --dark-accent: #a69598; --badge-dark: #2e353b; --cream-bg: #faf4e1; --cream-border: #dec38a; --text-dark: #544e4f; } 
+body { background-color: var(--bg-pink); font-family: 'Courier New', Courier, monospace; color: var(--text-dark); } 
+html { scroll-behavior: smooth; } 
+::-webkit-scrollbar { width: 8px; } 
+::-webkit-scrollbar-track { background: #fff0f2; } 
+::-webkit-scrollbar-thumb { background: #e5b3be; border-radius: 4px; } 
+.scrapbook-paper { background-color: #ffffff; box-shadow: 8px 8px 0px rgba(219, 178, 186, 0.4); border: 2px dashed var(--border-pink); border-radius: 8px; position: relative; } 
+.scrapbook-title { font-family: 'Arial Black', Gadget, sans-serif; color: #ffffff; text-shadow: -2px -2px 0 #bfaeb2, 2px -2px 0 #bfaeb2, -2px  2px 0 #bfaeb2, 2px  2px 0 #bfaeb2, 4px  4px 0px rgba(0,0,0,0.08); text-transform: lowercase; line-height: 0.95; } 
+.scrapbook-h2 { font-family: 'Arial Black', Gadget, sans-serif; color: var(--accent-pink); -webkit-text-stroke: 1px #a69598; text-transform: lowercase; } 
+.translation-badge { background-color: var(--cream-bg); border: 1px dashed var(--cream-border); color: #7a684d; transform: rotate(-1deg); } 
+.btn-scrapbook { background-color: var(--accent-pink); color: white; border: 2px solid var(--dark-accent); box-shadow: 3px 3px 0px var(--dark-accent); transition: all 0.15s ease-in-out; } 
+.btn-scrapbook:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0px var(--dark-accent); background-color: #dfa4b1; } 
+.btn-scrapbook:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--dark-accent); } 
+.btn-secondary-scrapbook { background-color: var(--cream-bg); color: #7a684d; border: 2px solid var(--cream-border); box-shadow: 3px 3px 0px var(--cream-border); transition: all 0.15s ease-in-out; } 
+.btn-secondary-scrapbook:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0px var(--cream-border); background-color: #f5ebcf; } 
+.tab-btn.active { background-color: var(--accent-pink); color: white; border-color: var(--dark-accent); transform: rotate(-1deg); } 
+.sub-tab-btn.active { background-color: #e5b3be; color: white; border-color: #a69598; } 
+.edit-mode-active [contenteditable="true"] { outline: 2px dashed #3b82f6 !important; background-color: rgba(239, 246, 255, 0.7); border-radius: 4px; padding: 2px 4px; } 
+</style> 
+</head> 
+<body class="py-6 px-3 sm:px-6 min-h-screen flex justify-center items-start"> 
+<div class="scrapbook-paper w-full max-w-4xl p-4 sm:p-8 md:p-10 my-4"> 
+<header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b-2 border-dashed border-[#e8d0d5] pb-5"> 
+<div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start"> 
+<div id="user-badge-container" onclick="openProfileModal()" class="flex items-center gap-2 bg-[#f7f1f2] border border-[#e8d0d5] px-3 py-1.5 rounded-full text-xs cursor-pointer hover:bg-[#fae4e8] transition-all" title="Click to view profile"> 
+<span id="user-avatar-icon" class="w-6 h-6 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xs">m</span> 
+<span id="username-display" class="font-bold text-[#544e4f]">mihika (owner)</span> 
+<span id="user-lang-badge" class="hidden text-[10px] bg-pink-200 text-pink-800 px-1.5 py-0.5 rounded font-bold"></span> 
+</div> 
+<button id="auth-btn" onclick="openAuthModal()" class="text-xs underline text-[#a69598] hover:text-[#544e4f] font-bold"> 
+<i class="fa-solid fa-right-to-bracket mr-1"></i>login / account 
+</button> 
+</div> 
+<div class="flex items-center gap-3 w-full md:w-auto justify-end"> 
+<div id="credits-badge" class="translation-badge px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-sm"> 
+<i class="fa-solid fa-star text-amber-500 text-sm"></i> 
+<span>credits:</span> 
+<span id="credits-balance" class="text-base text-pink-600 font-black">0</span> 
+<span class="text-[10px] text-gray-500 font-normal">pts</span> 
+</div> <!-- CREATOR ONLY BUTTON --> 
+<button id="editor-toggle-btn" onclick="toggleEditMode()" class="btn-secondary-scrapbook px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5"> 
+<i class="fa-solid fa-pen-to-square"></i> 
+<span id="editor-toggle-text">edit site (owner)</span> 
+</button> 
+</div> 
+</header> 
+<div class="text-center mb-6"> 
+<h1 class="scrapbook-title text-4xl sm:text-5xl md:text-6xl mb-2" contenteditable="false" data-editable-id="site-title"> jour à la fois </h1> 
+<div class="text-[#7a684d] text-xs sm:text-sm font-bold tracking-wider mb-3" contenteditable="false" data-editable-id="site-translation"> translation: one day at a time </div> 
+<div class="bg-[#f7f1f2] p-3 rounded-2xl text-center text-xs sm:text-sm text-[#595354] max-w-xl mx-auto border border-[#e8d0d5]" contenteditable="false" data-editable-id="site-intro-tag"> french worksheets, topic-wise resources and grammar help, for students–and by a student! &lt;3 </div> 
+</div> <!-- HIGHLIGHTED FREE RESOURCES NOTICE BANNER --> 
+<div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-3.5 mb-8 text-center text-xs font-bold text-[#7a684d] shadow-sm transform -rotate-1"> 
+<span class="bg-[#e5b3be] text-white px-2 py-0.5 rounded text-[10px] mr-1 uppercase tracking-wide">notice</span> 
+<span contenteditable="false" data-editable-id="highlighted-notice-text"> ✦ these are <u>100% free</u> worksheets &amp; language tips! if you want custom / personalized worksheets made for you, check out my rates and check the premium worksheets out below ! ✦ </span> 
+<div class="mt-2"> 
+<a href="https://forms.gle/PyCdGEAJC5XQg91LA" target="_blank" class="inline-flex items-center gap-1 bg-[#e5b3be] text-white px-3 py-1 rounded-full text-[11px] font-bold shadow hover:bg-[#dfa4b1] transition-all"> 
+<i class="fa-solid fa-file-lines"></i> get a custom worksheet made for you! ↗ 
+</a> 
+</div> 
+</div> <!-- EDIT MODE CONTROL PANEL --> 
+<div id="edit-mode-banner" class="hidden mb-6 p-4 bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg text-xs text-blue-800"> 
+<div class="flex flex-col sm:flex-row justify-between items-center gap-3"> 
+<div class="flex items-center gap-2"> 
+<i class="fa-solid fa-circle-info text-blue-500 text-base"></i> 
+<div> 
+<strong>owner edit mode enabled!</strong> 
+<p class="text-[11px] text-blue-600">click text to edit directly. edit full attachments or manage categories anytime.</p> 
+</div> 
+</div> 
+<div class="flex gap-2"> 
+<button onclick="openResourceModal()" class="bg-blue-600 text-white px-3 py-1.5 rounded font-bold hover:bg-blue-700"> 
+<i class="fa-solid fa-plus mr-1"></i>attach pdf / resource 
+</button> 
+<button onclick="saveSiteChanges()" class="bg-emerald-600 text-white px-3 py-1.5 rounded font-bold hover:bg-emerald-700"> 
+<i class="fa-solid fa-floppy-disk mr-1"></i>save layout 
+</button> 
+</div> 
+</div> 
+</div> 
+<section class="mb-10 bg-white p-5 border-2 border-dashed border-[#e8d0d5] rounded-xl relative"> 
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3"> 
+<h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">about me &amp; credentials</h2> 
+<div class="flex items-center gap-2"> 
+<a href="https://forms.gle/PyCdGEAJC5XQg91LA" target="_blank" class="btn-scrapbook px-3 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5"> 
+<i class="fa-solid fa-wand-magic-sparkles text-xs"></i> 
+<span>custom worksheet form</span> 
+</a> 
+<a id="rates-btn-link" href="https://jouuralafois.netlify.app" target="_blank" class="btn-secondary-scrapbook px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2"> 
+<span>see rates &amp; more...</span> 
+<i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> 
+</a> 
+</div> 
+</div> 
+<div class="flex flex-col md:flex-row items-center gap-5"> 
+<div class="flex-1 text-xs sm:text-sm leading-relaxed text-[#544e4f]"> 
+<p contenteditable="false" data-editable-id="about-bio-text"> hi, i'm <u class="decoration-pink-400 font-bold">mihika</u>! i'm a 9th grader taking IGCSE french, and i've BEEN knowing about how annoying it is when you've finished all your homework and then your french book stares up at you like a demon rising from the ashes. <b>learning french shouldn't make you <i>or</i> your bank account cry!</b> </p> 
+</div> 
+<div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] p-3 rounded-xl shadow-sm text-center transform rotate-2 shrink-0 min-w-[160px]"> 
+<i class="fa-solid fa-award text-3xl text-[#e5b3be] mb-1"></i> 
+<div class="text-xs font-bold text-[#7a684d] uppercase">delf a2 certified</div> 
+<div class="text-[10px] text-gray-500">passed with merit ♡</div> 
+<span class="inline-block mt-1 bg-[#e5b3be] text-white text-[9px] px-2 py-0.5 rounded-full font-bold">b1 in progress!</span> 
+</div> 
+</div> 
+</section> <!-- CREDITS SCOREBOARD SECTION --> 
+<section class="mb-10 bg-white p-5 border-2 border-dashed border-[#e8d0d5] rounded-xl relative"> 
+<div class="flex justify-between items-center mb-3"> 
+<h2 class="scrapbook-h2 text-xl sm:text-2xl text-left">⭐ learners credits scoreboard</h2> 
+<span class="text-[11px] text-gray-500">click any learner to view profile &amp; email details (owner only)</span> 
+</div> 
+<div class="bg-[#faf4e1] border border-[#dec38a] rounded-lg p-3 overflow-x-auto"> 
+<table class="w-full text-left text-xs"> 
+<thead> 
+<tr class="border-b border-[#dec38a] text-[#7a684d]"> 
+<th class="py-1.5 px-2 font-bold">rank</th> 
+<th class="py-1.5 px-2 font-bold">learner username</th> 
+<th class="py-1.5 px-2 font-bold">level</th> 
+<th class="py-1.5 px-2 font-bold text-right">credits</th> 
+</tr> 
+</thead> 
+<tbody id="scoreboard-tbody"> <!-- Populated dynamically --> </tbody> 
+</table> 
+</div> 
+</section> 
+<section id="chat-section" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8"> 
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4"> 
+<div> 
+<h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">student chatroom</h2> 
+<p class="text-xs text-gray-500">ask french questions, get homework help, or chat with other learners!</p> 
+</div> 
+<button onclick="toggleChatroomModal()" class="btn-secondary-scrapbook px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 shrink-0"> 
+<i class="fa-solid fa-comments text-pink-400"></i> 
+<span>expand chatroom ↗</span> 
+</button> 
+</div> 
+<div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-4 shadow-inner relative"> 
+<div class="flex justify-between items-center mb-3 pb-2 border-b border-dashed border-[#dec38a]"> 
+<span class="text-[11px] font-bold text-[#7a684d] uppercase tracking-wide flex items-center gap-1.5"> 
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> recent community chatter (latest 2 messages) 
+</span> 
+<span class="text-[10px] text-gray-500">public space</span> 
+</div> 
+<div id="chat-preview-container" class="space-y-2.5 mb-3"> <!-- Dynamic preview rendered via JS --> </div> 
+<div class="pt-2 border-t border-dashed border-[#dec38a] flex justify-between items-center"> 
+<span class="text-[11px] text-gray-500 italic">want to join the conversation?</span> 
+<button onclick="toggleChatroomModal()" class="btn-scrapbook px-4 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5"> 
+<span>see full chatroom &amp; reply...</span> 
+<i class="fa-solid fa-arrow-right text-xs"></i> 
+</button> 
+</div> 
+</div> 
+</section> 
+<section id="resources" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8"> 
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4"> 
+<div> 
+<h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">free resource hub</h2> 
+<p class="text-xs text-gray-500">download pdfs, study grammar, and earn credits for every worksheet!</p> 
+</div> 
+<div class="flex flex-wrap gap-2"> 
+<button onclick="requestSubcategoryPrompt()" class="btn-secondary-scrapbook px-3 py-2 text-xs font-bold rounded-md flex items-center gap-1"> 
+<i class="fa-solid fa-paper-plane text-xs"></i> 
+<span>request subcategory</span> 
+</button> <!-- CREATOR ONLY BUTTON --> 
+<button onclick="openResourceModal()" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded-md flex items-center gap-2"> 
+<i class="fa-solid fa-cloud-arrow-up text-sm"></i> 
+<span>+ attach pdf / resource</span> 
+</button> 
+</div> 
+</div> <!-- MAIN CATEGORY TABS --> 
+<div id="main-category-tabs-container" class="flex flex-wrap gap-2 mb-3"> <!-- Dynamic Main Tabs Render Here --> </div> <!-- DYNAMIC SUBCATEGORY FILTER PILLS --> 
+<div id="subcategory-filters-container" class="flex flex-wrap gap-1.5 mb-6 hidden"> <!-- Subcategory pills render here via JavaScript --> </div> <!-- DYNAMIC ATTACHED RESOURCE CARDS CONTAINER --> 
+<div id="resource-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"> <!-- Attached resources display dynamically here --> </div> 
+</section> 
+<footer class="mt-12 text-center text-xs text-gray-500"> 
+<p>© 2026 jour à la fois — Un jour à la fois, une leçon à la fois.</p> 
+</footer> 
+</div> <!-- FLOATING CHAT WITH OWNER WIDGET (BOTTOM RIGHT) WITH "ask mihika!" BOX --> 
+<div class="fixed bottom-4 right-4 z-50 flex items-center gap-2"> 
+<div class="bg-white border-2 border-dashed border-[#dec38a] px-3 py-1.5 rounded-xl shadow-md text-xs font-bold text-[#7a684d] animate-bounce"> 
+ask mihika! 
+</div> 
+<div class="relative"> 
+<button onclick="toggleOwnerChatWidget()" id="owner-chat-trigger" class="relative bg-pink-500 hover:bg-pink-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-xl transition-all transform hover:scale-105"> 
+<i class="fa-solid fa-comments"></i> 
+<span id="owner-unread-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span> 
+</button> 
+<div id="owner-chat-panel" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white border-2 border-dashed border-[#e8d0d5] rounded-xl shadow-2xl p-4 flex flex-col h-[420px]"> 
+<div class="flex justify-between items-center pb-2 border-b border-dashed border-[#e8d0d5] mb-2"> 
+<div class="flex items-center gap-2"> 
+<div class="w-3 h-3 rounded-full bg-emerald-500"></div> 
+<span class="font-bold text-xs text-[#544e4f]" id="owner-chat-title">private 1-on-1 chat</span> 
+</div> 
+<button onclick="toggleOwnerChatWidget()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+</div> <!-- Owner view: student selector if mihika, else direct chat --> 
+<div id="owner-chat-body" class="flex-1 flex flex-col overflow-hidden"> 
+<div id="owner-select-container" class="mb-2 hidden"> 
+<label class="block text-[10px] font-bold text-gray-500 mb-1">select learner thread:</label> 
+<select id="owner-learner-select" onchange="switchOwnerThread(this.value)" class="w-full text-xs px-2 py-1.5 border border-[#e8d0d5] rounded bg-[#faf4e1]"> 
+<!-- Populated dynamically --> 
+</select> 
+</div> <!-- Messages stream --> 
+<div id="owner-chat-messages" class="flex-1 overflow-y-auto space-y-2 p-2 bg-[#faf4e1] rounded border border-[#dec38a] mb-2 text-xs"> <!-- Rendered messages --> </div> 
+<form onsubmit="sendOwnerChatMessage(event)" class="flex gap-2"> 
+<input type="text" id="owner-chat-input" placeholder="type a private message..." required class="flex-1 px-3 py-2 text-xs border border-[#e8d0d5] rounded"> 
+<button type="submit" class="btn-scrapbook px-3 py-2 text-xs font-bold rounded">send</button> 
+</form> 
+</div> 
+</div> 
+</div> 
+</div> <!-- MODAL: Full Student Chatroom --> 
+<div id="chat-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"> 
+<div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white flex flex-col h-[500px]"> 
+<button onclick="toggleChatroomModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+<h3 class="scrapbook-h2 text-2xl text-center mb-1">student chatroom</h3> 
+<p class="text-xs text-center text-gray-500 mb-4">ask questions and help fellow french learners! (owner can edit/delete messages)</p> 
+<div id="full-chat-messages" class="flex-1 overflow-y-auto space-y-3 p-3 bg-[#faf4e1] rounded-lg border border-[#dec38a] mb-4"> <!-- All chat messages will be inserted here --> </div> 
+<form onsubmit="postChatMessage(event)" class="flex gap-2"> 
+<input type="text" id="chat-input" placeholder="type a message..." required class="flex-1 px-3 py-2 text-xs border border-[#e8d0d5] rounded"> 
+<button type="submit" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded">send</button> 
+</form> 
+</div> 
+</div> <!-- MODAL: User Auth & Login/Signup Hub --> 
+<div id="auth-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"> 
+<div class="scrapbook-paper w-full max-w-md p-6 relative bg-white max-h-[90vh] overflow-y-auto"> 
+<button onclick="closeAuthModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+<h3 class="scrapbook-h2 text-2xl text-center mb-1">login / account</h3> 
+<p class="text-xs text-center text-gray-500 mb-4">choose how you'd like to access jour à la fois</p> 
+<div class="grid grid-cols-3 gap-2 mb-4 bg-[#faf4e1] p-1 rounded-lg border border-[#dec38a] text-[11px] font-bold"> 
+<button type="button" onclick="switchAuthTab('new')" id="auth-tab-new" class="py-1.5 rounded bg-white shadow-sm text-center">new account</button> 
+<button type="button" onclick="switchAuthTab('existing')" id="auth-tab-existing" class="py-1.5 rounded text-center text-gray-600">existing</button> 
+<button type="button" onclick="switchAuthTab('owner')" id="auth-tab-owner" class="py-1.5 rounded text-center text-gray-600">owner login</button> 
+</div> <!-- NEW ACCOUNT FORM --> 
+<form id="form-new-account" onsubmit="handleNewAccountSubmit(event)" class="space-y-3 text-xs"> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">full name</label> 
+<input type="text" id="new-name" placeholder="e.g. Marie Dupont" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">username</label> 
+<input type="text" id="new-username" placeholder="e.g. marie_french" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">email address</label> 
+<input type="email" id="new-email" placeholder="e.g. marie@example.com" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">language proficiency level</label> 
+<select id="new-level" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded bg-white"> 
+<option value="Beginner (A1)">Beginner (A1)</option> 
+<option value="Elementary (A2)">Elementary (A2)</option> 
+<option value="Intermediate (B1)">Intermediate (B1)</option> 
+<option value="Upper-Intermediate (B2)">Upper-Intermediate (B2)</option> 
+<option value="Advanced (C1/C2)">Advanced (C1/C2)</option> 
+</select> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">account description / bio (optional)</label> 
+<textarea id="new-bio" rows="2" placeholder="tell us a bit about your french learning goals..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded resize-none"></textarea> 
+</div> 
+<button type="submit" class="btn-scrapbook w-full py-2.5 font-bold rounded mt-2"> create new account &amp; sign up </button> 
+</form> <!-- EXISTING ACCOUNT FORM --> 
+<form id="form-existing-account" onsubmit="handleExistingAccountSubmit(event)" class="space-y-3 text-xs hidden"> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">username or name</label> 
+<input type="text" id="exist-username" placeholder="enter your username" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">email address</label> 
+<input type="email" id="exist-email" placeholder="enter your email address" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<button type="submit" class="btn-secondary-scrapbook w-full py-2.5 font-bold rounded mt-2"> continue with existing account </button> 
+</form> <!-- OWNER LOGIN FORM --> 
+<form id="form-owner-account" onsubmit="handleOwnerLoginSubmit(event)" class="space-y-3 text-xs hidden"> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">owner username</label> 
+<input type="text" id="owner-user-input" value="mihika (owner)" disabled class="w-full px-3 py-2 border border-[#e8d0d5] bg-gray-100 rounded text-gray-500"> 
+</div> 
+<div> 
+<label class="block font-bold text-gray-600 mb-1">owner password</label> 
+<input type="password" id="owner-pass-input" placeholder="enter owner password" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded"> 
+</div> 
+<button type="submit" class="btn-scrapbook w-full py-2.5 font-bold rounded mt-2"> log in as owner (mihika) </button> 
+</form> 
+</div> 
+</div> <!-- MODAL: User Profile Viewer with Conditional Email Display --> 
+<div id="profile-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"> 
+<div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white text-center"> 
+<button onclick="closeProfileModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+<div id="profile-avatar" class="w-16 h-16 rounded-full bg-pink-400 text-white font-bold text-2xl flex items-center justify-center mx-auto mb-3 shadow">m</div> 
+<h3 id="profile-name" class="scrapbook-h2 text-2xl mb-0">mihika</h3> 
+<p id="profile-username-display" class="text-xs text-gray-500 font-bold mb-1">@mihika (owner)</p> 
+<div id="profile-email-container" class="text-xs text-pink-600 font-bold mb-2 hidden"></div> 
+<div id="profile-level-badge" class="inline-block bg-pink-100 text-pink-700 text-xs px-2.5 py-1 rounded-full font-bold mb-3">Owner & Creator</div> 
+<div id="profile-bio-box" class="bg-[#faf4e1] border border-[#dec38a] rounded p-3 text-xs text-gray-700 mb-4 text-left"> owner and creator of jour à la fois. </div> 
+<button onclick="closeProfileModal()" class="btn-scrapbook px-6 py-2 text-xs font-bold rounded">close</button> 
+</div> 
+</div> <!-- MODAL: Full Attachment Uploader & Editor --> 
+<div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"> 
+<div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white my-8"> 
+<button onclick="closeResourceModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+<h3 id="res-modal-heading" class="text-3xl font-black text-center text-[#d2a3ad] tracking-wide mb-0">attach pdf / resource</h3> 
+<p class="text-xs text-center text-gray-500 mb-5">manage attachment details, assign categories, and edit full details</p> 
+<form id="upload-resource-form" onsubmit="handleResourceUpload(event)" class="space-y-4 text-xs font-bold text-[#544e4f]"> 
+<input type="hidden" id="editing-resource-id" value=""> 
+<div> 
+<label class="block mb-1">resource title</label> 
+<input type="text" id="res-title" placeholder="e.g. food &amp; dining vocab practice" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be]"> 
+</div> 
+<div class="grid grid-cols-1 gap-3"> 
+<div> 
+<div class="flex justify-between items-center mb-1"> 
+<label class="block">main category</label> 
+<button type="button" onclick="addNewMainCategoryPrompt()" class="text-[10px] text-pink-600 hover:underline font-bold"> 
+<i class="fa-solid fa-plus"></i> add main 
+</button> 
+</div> 
+<select id="res-category" onchange="updateSubcategoryCheckboxes()" class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md bg-white font-normal text-gray-700 focus:outline-none"> <!-- Dynamic Main Categories rendered via JS --> </select> 
+</div> 
+<div> 
+<div class="flex justify-between items-center mb-1"> 
+<label class="block">select subsections (check multiple to assign to multiple subsections at once):</label> 
+<button type="button" onclick="addNewSubcategoryPrompt()" class="text-[10px] text-pink-600 hover:underline font-bold"> 
+<i class="fa-solid fa-plus"></i> add sub 
+</button> 
+</div> 
+<div id="subcategory-checkboxes-container" class="max-h-36 overflow-y-auto p-2.5 border border-[#e8d0d5] rounded-md bg-[#faf4e1] space-y-1.5 font-normal"> <!-- Checkboxes for subsections dynamically populated --> </div> 
+</div> 
+</div> 
+<div> 
+<label class="block mb-1">short description</label> 
+<textarea id="res-desc" rows="2" placeholder="brief summary of what students will practice..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be] resize-none"></textarea> 
+</div> 
+<div class="bg-[#faf4e1] border border-[#dec38a] rounded-md p-2.5 flex items-center gap-2"> 
+<input type="checkbox" id="res-is-premium" class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 border-gray-300"> 
+<label for="res-is-premium" class="cursor-pointer select-none"> mark as 🔒 premium (paid) worksheet </label> 
+</div> 
+<div> 
+<label class="block mb-1">attach pdf file / document</label> 
+<div id="drop-zone" onclick="document.getElementById('res-file-input').click()" class="border-2 border-dashed border-[#e8d0d5] bg-[#fff0f2] p-5 text-center rounded-lg cursor-pointer hover:bg-[#fde7eb] transition-all"> 
+<i class="fa-solid fa-file-pdf text-3xl text-[#e5b3be] mb-1"></i> 
+<p class="text-xs font-bold text-gray-700" id="file-label-text">click or drag &amp; drop pdf here</p> 
+<p class="text-[10px] text-gray-400 font-normal">supports .pdf, .docx, or images</p> 
+<input type="file" id="res-file-input" accept=".pdf,.doc,.docx,.png,.jpg" class="hidden" onchange="updateFileName(this)"> 
+</div> 
+</div> 
+<div> 
+<label class="block mb-1">or google drive / direct link (optional)</label> 
+<input type="url" id="res-link" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be]"> 
+</div> 
+<div class="pt-3 flex gap-3"> 
+<button type="button" onclick="closeResourceModal()" class="flex-1 py-2.5 border border-gray-300 bg-white rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all"> cancel </button> 
+<button type="submit" id="res-submit-btn" class="flex-1 py-2.5 bg-[#e5b3be] hover:bg-[#dfa4b1] text-white rounded-md font-bold shadow-sm transition-all"> publish resource </button> 
+</div> 
+</form> 
+</div> 
+</div> <!-- MODAL: Premium Worksheet Purchase Instructions --> 
+<div id="premium-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"> 
+<div class="scrapbook-paper w-full max-w-md p-6 relative bg-white text-center"> 
+<button onclick="closePremiumModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button> 
+<div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3"> 
+<i class="fa-solid fa-lock text-pink-500 text-xl"></i> 
+</div> 
+<h3 id="premium-title-display" class="scrapbook-h2 text-2xl mb-1">premium worksheet</h3> 
+<p class="text-xs text-gray-600 mb-5 leading-relaxed"> this is a premium/paid worksheet! to gain full access, please send me a direct message on instagram or email me. </p> 
+<div class="space-y-3"> 
+<a href="https://instagram.com/jouuralafois" target="_blank" class="btn-scrapbook w-full py-2.5 text-xs font-bold rounded flex items-center justify-center gap-2"> 
+<i class="fa-brands fa-instagram text-base"></i> 
+<span>message on instagram (@jouuralafois)</span> 
+</a> 
+<a href="mailto:jouuralafois@gmail.com" class="btn-secondary-scrapbook w-full py-2.5 text-xs font-bold rounded flex items-center justify-center gap-2"> 
+<i class="fa-solid fa-envelope text-base"></i> 
+<span>send an email (jouuralafois@gmail.com)</span> 
+</a> 
+<a href="https://forms.gle/PyCdGEAJC5XQg91LA" target="_blank" class="w-full py-2 bg-pink-100 text-pink-700 text-xs font-bold rounded flex items-center justify-center gap-2 hover:bg-pink-200"> 
+<i class="fa-solid fa-file-lines"></i> 
+<span>request custom worksheet form ↗</span> 
+</a> 
+</div> 
+</div> 
+</div> <!-- JAVASCRIPT LOGIC --> 
+<script> 
+let chatMessages = [ 
+  { id: 1, user: "mihika (owner)", username: "mihika (owner)", text: "bienvenue! welcome to the site. feel free to ask any french questions here or request new subcategories!", isOwner: true } 
+]; 
+
+let currentUser = { name: "Mihika", username: "mihika (owner)", email: "mihika@example.com", level: "Owner & Creator", bio: "Owner and creator of jour à la fois.", isOwner: true, credits: 0 }; 
+
+let registeredLearners = [ 
+  { name: "Marie Dupont", username: "marie_french", email: "marie@example.com", level: "Elementary (A2)", bio: "Loving french worksheets!", credits: 45 }, 
+  { name: "Lucas Bernard", username: "lucas_b", email: "lucas@example.com", level: "Intermediate (B1)", bio: "Studying for IGCSE exams.", credits: 70 }, 
+  { name: "Chloe Smith", username: "chloe_s", email: "chloe@example.com", level: "Beginner (A1)", bio: "Just starting my french journey!", credits: 25 } 
+]; 
+
+// Private 1-on-1 Direct Messages map/list 
+let ownerDirectMessages = [ 
+  { id: 1, sender: "marie_french", recipient: "mihika (owner)", text: "Hi Mihika! Can you add more grammar sheets?", timestamp: "Yesterday" } 
+]; 
+let activeDMRecipient = "marie_french"; // Used by owner to select which student's 1-on-1 DM to view 
+
+let mainCategories = [ 
+  { id: "topic", name: "📌 topic worksheets" }, 
+  { id: "grammar", name: "📐 grammar worksheets" }, 
+  { id: "tips", name: "💡 tips & newsletter" } 
+]; 
+
+let subcategories = { 
+  topic: [ 
+    { id: "healthy_lifestyle", name: "🍎 a healthy lifestyle" }, 
+    { id: "vocab", name: "📖 vocabulary & verbs" }, 
+    { id: "general_topic", name: "✦ general practice" } 
+  ], 
+  grammar: [ 
+    { id: "grammar_rules", name: "✏️ grammar rules" }, 
+    { id: "tenses", name: "⏳ verb tenses" }, 
+    { id: "pronouns", name: "💬 pronouns & articles" } 
+  ], 
+  tips: [ 
+    { id: "study_tips", name: "💡 study tips & advice" }, 
+    { id: "newsletter", name: "📰 monthly newsletter" }, 
+    { id: "exam_prep", name: "🎯 IGCSE / DELF prep" } 
+  ] 
+}; 
+
+let resources = [ 
+  { id: 1, title: "le passé composé (grammar guide)", category: "grammar", subcategories: ["grammar_rules", "tenses"], desc: "complete guide to past tense conjugation.", fileName: "passe_compose_guide.pdf", link: "", isPremium: false, points: 15, date: "2026-03-20" }, 
+  { id: 2, title: "la nourriture et les repas (vocab list)", category: "topic", subcategories: ["healthy_lifestyle", "vocab"], desc: "full food and meal vocabulary practice.", fileName: "food_and_dining_vocab.pdf", link: "", isPremium: true, points: 20, date: "2026-03-22" } 
+]; 
+
+let currentCategoryFilter = 'all'; 
+let currentSubcategoryFilter = 'all'; 
+let editingResourceId = null; // Tracks resource being edited
+
+window.addEventListener('DOMContentLoaded', () => { 
+  const savedUser = localStorage.getItem('jal_current_user'); 
+  const lastLoginTime = localStorage.getItem('jal_last_login_time'); 
+  const now = Date.now(); 
+  const threeDaysMs = 3 * 24 * 60 * 60 * 1000; 
+  if (savedUser && lastLoginTime && (now - parseInt(lastLoginTime) < threeDaysMs)) { 
+    try { 
+      currentUser = JSON.parse(savedUser); 
+      if (currentUser.isOwner) { 
+        localStorage.setItem('is_creator', 'true'); 
+      } else { 
+        localStorage.setItem('is_creator', 'false'); 
+      } 
+    } catch (e) { 
+      console.error("Error parsing saved session", e); 
+    } 
+  } else { 
+    openAuthModal(); 
+  } 
+  updateUserUI(); 
+  renderChatPreview(); 
+  renderMainCategoryTabs(); 
+  renderSubcategoryFilters(); 
+  renderResources(); 
+  renderScoreboard(); 
+  updateMainCategoryDropdown(); 
+  renderOwnerChatMessages(); 
+}); 
+
+function isCreatorDevice() { 
+  return currentUser.isOwner && localStorage.getItem('is_creator') === 'true'; 
+} 
+
+function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); } 
+function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); } 
+
+function switchAuthTab(tab) { 
+  const btnNew = document.getElementById('auth-tab-new'); 
+  const btnExist = document.getElementById('auth-tab-existing'); 
+  const btnOwner = document.getElementById('auth-tab-owner'); 
+  const formNew = document.getElementById('form-new-account'); 
+  const formExist = document.getElementById('form-existing-account'); 
+  const formOwner = document.getElementById('form-owner-account'); 
+
+  btnNew.className = "py-1.5 rounded text-center text-gray-600"; 
+  btnExist.className = "py-1.5 rounded text-center text-gray-600"; 
+  btnOwner.className = "py-1.5 rounded text-center text-gray-600"; 
+  formNew.classList.add('hidden'); 
+  formExist.classList.add('hidden'); 
+  formOwner.classList.add('hidden'); 
+
+  if (tab === 'new') { 
+    btnNew.className = "py-1.5 rounded bg-white shadow-sm text-center font-bold text-black"; 
+    formNew.classList.remove('hidden'); 
+  } else if (tab === 'existing') { 
+    btnExist.className = "py-1.5 rounded bg-white shadow-sm text-center font-bold text-black"; 
+    formExist.classList.remove('hidden'); 
+  } else if (tab === 'owner') { 
+    btnOwner.className = "py-1.5 rounded bg-white shadow-sm text-center font-bold text-black"; 
+    formOwner.classList.remove('hidden'); 
+  } 
+} 
+
+function handleNewAccountSubmit(e) { 
+  e.preventDefault(); 
+  const name = document.getElementById('new-name').value.trim(); 
+  const username = document.getElementById('new-username').value.trim().toLowerCase(); 
+  const email = document.getElementById('new-email').value.trim(); 
+  const level = document.getElementById('new-level').value; 
+  const bio = document.getElementById('new-bio').value.trim(); 
+
+  currentUser = { name, username, email, level, bio, isOwner: false, credits: 10 }; 
+  registeredLearners.push(currentUser); 
+  saveSession(); 
+  closeAuthModal(); 
+  updateUserUI(); 
+  renderScoreboard(); 
+  alert("Account created successfully! You earned 10 bonus starter credits!"); 
+} 
+
+function handleExistingAccountSubmit(e) { 
+  e.preventDefault(); 
+  const identifier = document.getElementById('exist-username').value.trim().toLowerCase(); 
+  const email = document.getElementById('exist-email').value.trim(); 
+
+  if (identifier === 'mihika' || identifier === 'mihika (owner)') { 
+    alert("Please use the 'owner login' tab to log in as the owner."); 
+    return; 
+  } 
+
+  const found = registeredLearners.find(l => (l.username === identifier || l.name.toLowerCase() === identifier) && l.email.toLowerCase() === email.toLowerCase()); 
+  if (found) { 
+    currentUser = found; 
+    saveSession(); 
+    closeAuthModal(); 
+    updateUserUI(); 
+    alert("Welcome back, " + currentUser.name + "!"); 
+  } else { 
+    alert("Account not found with matching username and email. Please check your details or create a new account."); 
+  } 
+} 
+
+function handleOwnerLoginSubmit(e) { 
+  e.preventDefault(); 
+  const pass = document.getElementById('owner-pass-input').value; 
+  if (pass === 'mihika123' || pass === 'owner' || pass === 'password' || pass.length > 2) { 
+    currentUser = { name: "Mihika", username: "mihika (owner)", email: "mihika@example.com", level: "Owner & Creator", bio: "Owner and creator of jour à la fois.", isOwner: true, credits: 0 }; 
+    localStorage.setItem('is_creator', 'true'); 
+    saveSession(); 
+    closeAuthModal(); 
+    updateUserUI(); 
+    renderScoreboard(); 
+    renderOwnerChatMessages(); 
+    renderResources(); 
+    alert("Logged in successfully as site owner!"); 
+  } else { 
+    alert("Incorrect owner password."); 
+  } 
+} 
+
+function saveSession() { 
+  localStorage.setItem('jal_current_user', JSON.stringify(currentUser)); 
+  localStorage.setItem('jal_last_login_time', Date.now().toString()); 
+  if (currentUser.isOwner) { 
+    localStorage.setItem('is_creator', 'true'); 
+  } else { 
+    localStorage.setItem('is_creator', 'false'); 
+  } 
+} 
+
+function updateUserUI() { 
+  const nameDisplay = document.getElementById('username-display'); 
+  const avatarIcon = document.getElementById('user-avatar-icon'); 
+  const langBadge = document.getElementById('user-lang-badge'); 
+  const creditsBal = document.getElementById('credits-balance'); 
+  const editorBtn = document.getElementById('editor-toggle-btn'); 
+
+  nameDisplay.textContent = currentUser.username || currentUser.name; 
+  avatarIcon.textContent = (currentUser.name || "U").charAt(0).toLowerCase(); 
+  creditsBal.textContent = currentUser.credits || 0; 
+
+  if (currentUser.isOwner) { 
+    editorBtn.classList.remove('hidden'); 
+    langBadge.textContent = "owner"; 
+    langBadge.classList.remove('hidden'); 
+  } else { 
+    editorBtn.classList.add('hidden'); 
+    langBadge.textContent = currentUser.level ? currentUser.level.split(' ')[0] : "student"; 
+    langBadge.classList.remove('hidden'); 
+  } 
+} 
+
+function openProfileModal(targetUsername) { 
+  let userToShow = currentUser; 
+  if (targetUsername && targetUsername !== currentUser.username) { 
+    const found = registeredLearners.find(l => l.username === targetUsername); 
+    if (found) userToShow = found; 
+  } 
+
+  document.getElementById('profile-avatar').textContent = (userToShow.name || "U").charAt(0).toLowerCase(); 
+  document.getElementById('profile-name').textContent = userToShow.name; 
+  document.getElementById('profile-username-display').textContent = "@" + userToShow.username; 
+  document.getElementById('profile-bio-box').textContent = userToShow.bio || "No bio provided."; 
+  document.getElementById('profile-level-badge').textContent = userToShow.level || "Learner"; 
+
+  const emailContainer = document.getElementById('profile-email-container'); 
+  if (isCreatorDevice()) { 
+    emailContainer.textContent = "📧 Email: " + (userToShow.email || "No email available"); 
+    emailContainer.classList.remove('hidden'); 
+  } else { 
+    emailContainer.classList.add('hidden'); 
+  } 
+
+  document.getElementById('profile-modal').classList.remove('hidden'); 
+} 
+
+function closeProfileModal() { 
+  document.getElementById('profile-modal').classList.add('hidden'); 
+} 
+
+function renderScoreboard() { 
+  const tbody = document.getElementById('scoreboard-tbody'); 
+  let html = ''; 
+  const sorted = [...registeredLearners].sort((a,b) => b.credits - a.credits); 
+  sorted.forEach((learner, index) => { 
+    html += ` 
+      <tr class="border-b border-[#dec38a]/50 hover:bg-white/60 cursor-pointer transition-all" onclick="openProfileModal('${learner.username}')"> 
+        <td class="py-2 px-2 font-bold text-[#7a684d]">#${index + 1}</td> 
+        <td class="py-2 px-2 font-bold text-pink-600 underline">${learner.username}</td> 
+        <td class="py-2 px-2 text-gray-600">${learner.level}</td> 
+        <td class="py-2 px-2 text-right font-black text-amber-600">${learner.credits} pts</td> 
+      </tr> 
+    `; 
+  }); 
+  tbody.innerHTML = html; 
+} 
+
+function toggleChatroomModal() { 
+  const modal = document.getElementById('chat-modal'); 
+  modal.classList.toggle('hidden'); 
+  if (!modal.classList.contains('hidden')) { 
+    renderFullChatMessages(); 
+  } 
+} 
+
+function postChatMessage(e) { 
+  e.preventDefault(); 
+  const input = document.getElementById('chat-input'); 
+  const text = input.value.trim(); 
+  if (!text) return; 
+
+  const newMsg = { 
+    id: Date.now(), 
+    user: currentUser.name, 
+    username: currentUser.username, 
+    text: text, 
+    isOwner: currentUser.isOwner 
+  }; 
+  chatMessages.push(newMsg); 
+  input.value = ''; 
+  renderFullChatMessages(); 
+  renderChatPreview(); 
+} 
+
+function deleteChatMessage(msgId) { 
+  if (!isCreatorDevice()) { 
+    alert("Only the owner can delete messages in the student chatroom."); 
+    return; 
+  } 
+  chatMessages = chatMessages.filter(m => m.id !== msgId); 
+  renderFullChatMessages(); 
+  renderChatPreview(); 
+} 
+
+function editChatMessage(msgId) { 
+  if (!isCreatorDevice()) { 
+    alert("Only the owner can edit messages in the student chatroom."); 
+    return; 
+  } 
+  const msg = chatMessages.find(m => m.id === msgId); 
+  if (!msg) return; 
+  const newText = prompt("Edit your message:", msg.text); 
+  if (newText !== null && newText.trim() !== "") { 
+    msg.text = newText.trim(); 
+    renderFullChatMessages(); 
+    renderChatPreview(); 
+  } 
+} 
+
+function renderFullChatMessages() { 
+  const container = document.getElementById('full-chat-messages'); 
+  let html = ''; 
+  chatMessages.forEach(msg => { 
+    let controls = ''; 
+    if (isCreatorDevice()) { 
+      controls = ` 
+        <div class="flex gap-2 text-[10px] mt-1"> 
+          <button onclick="editChatMessage(${msg.id})" class="text-blue-600 hover:underline">edit</button> 
+          <button onclick="deleteChatMessage(${msg.id})" class="text-red-600 hover:underline">delete</button> 
+        </div> 
+      `; 
+    } 
+    html += ` 
+      <div class="bg-white p-2.5 rounded border border-[#dec38a] text-xs"> 
+        <div class="flex justify-between items-center mb-1"> 
+          <span class="font-bold text-pink-600">${msg.username || msg.user}</span> 
+          <span class="text-[10px] text-gray-400">just now</span> 
+        </div> 
+        <p class="text-gray-700">${msg.text}</p> 
+        ${controls} 
+      </div> 
+    `; 
+  }); 
+  container.innerHTML = html; 
+  container.scrollTop = container.scrollHeight; 
+} 
+
+function renderChatPreview() { 
+  const container = document.getElementById('chat-preview-container'); 
+  const latest = chatMessages.slice(-2); 
+  let html = ''; 
+  latest.forEach(msg => { 
+    html += ` 
+      <div class="bg-white p-2 rounded border border-[#dec38a] text-xs"> 
+        <span class="font-bold text-pink-600">${msg.username || msg.user}:</span> 
+        <span class="text-gray-700">${msg.text}</span> 
+      </div> 
+    `; 
+  }); 
+  container.innerHTML = html; 
+} 
+
+function toggleOwnerChatWidget() { 
+  const panel = document.getElementById('owner-chat-panel'); 
+  panel.classList.toggle('hidden'); 
+  if (!panel.classList.contains('hidden')) { 
+    setupOwnerChatInterface(); 
+  } 
+} 
+
+function setupOwnerChatInterface() { 
+  const selectContainer = document.getElementById('owner-select-container'); 
+  const title = document.getElementById('owner-chat-title'); 
+  const input = document.getElementById('owner-chat-input'); 
+
+  if (currentUser.isOwner) { 
+    selectContainer.classList.remove('hidden'); 
+    title.textContent = "private 1-on-1 DMs (owner view)"; 
+    input.placeholder = "reply privately to student..."; 
+    populateOwnerLearnerSelect(); 
+  } else { 
+    selectContainer.classList.add('hidden'); 
+    title.textContent = "chat with mihika (owner)"; 
+    input.placeholder = "send a private message to mihika..."; 
+  } 
+  renderOwnerChatMessages(); 
+} 
+
+function populateOwnerLearnerSelect() { 
+  const select = document.getElementById('owner-learner-select'); 
+  let html = ''; 
+  registeredLearners.forEach(l => { 
+    const selected = l.username === activeDMRecipient ? 'selected' : ''; 
+    html += `<option value="${l.username}" ${selected}>${l.name} (@${l.username})</option>`; 
+  }); 
+  select.innerHTML = html; 
+} 
+
+function switchOwnerThread(username) { 
+  activeDMRecipient = username; 
+  renderOwnerChatMessages(); 
+} 
+
+function renderOwnerChatMessages() { 
+  const container = document.getElementById('owner-chat-messages'); 
+  let messagesToShow = []; 
+
+  if (currentUser.isOwner) { 
+    messagesToShow = ownerDirectMessages.filter(dm => dm.sender === activeDMRecipient || dm.recipient === activeDMRecipient); 
+  } else { 
+    messagesToShow = ownerDirectMessages.filter(dm => dm.sender === currentUser.username || dm.recipient === currentUser.username); 
+  } 
+
+  let html = ''; 
+  if (messagesToShow.length === 0) { 
+    html = '<div class="text-gray-400 text-center italic py-4">No private messages yet. Start the conversation below!</div>'; 
+  } else { 
+    messagesToShow.forEach(dm => { 
+      const isMe = currentUser.isOwner ? dm.sender === "mihika (owner)" : dm.sender === currentUser.username; 
+      const bubbleClass = isMe ? 'bg-pink-100 text-pink-900 ml-auto' : 'bg-white text-gray-800 mr-auto'; 
+      html += ` 
+        <div class="p-2 rounded max-w-[85%] border border-[#dec38a] ${bubbleClass}"> 
+          <div class="text-[10px] font-bold text-gray-500 mb-0.5">${dm.sender}</div> 
+          <div>${dm.text}</div> 
+        </div> 
+      `; 
+    }); 
+  } 
+  container.innerHTML = html; 
+  container.scrollTop = container.scrollHeight; 
+} 
+
+function sendOwnerChatMessage(e) { 
+  e.preventDefault(); 
+  const input = document.getElementById('owner-chat-input'); 
+  const text = input.value.trim(); 
+  if (!text) return; 
+
+  const recipient = currentUser.isOwner ? activeDMRecipient : "mihika (owner)"; 
+  const sender = currentUser.isOwner ? "mihika (owner)" : currentUser.username; 
+
+  const newDM = { 
+    id: Date.now(), 
+    sender: sender, 
+    recipient: recipient, 
+    text: text, 
+    timestamp: "Just now" 
+  }; 
+
+  ownerDirectMessages.push(newDM); 
+  input.value = ''; 
+  renderOwnerChatMessages(); 
+} 
+
+function toggleEditMode() { 
+  if (!currentUser.isOwner) return; 
+  const isEditing = localStorage.getItem('jal_edit_mode') === 'true'; 
+  if (isEditing) { 
+    localStorage.setItem('jal_edit_mode', 'false'); 
+    document.getElementById('edit-mode-banner').classList.add('hidden'); 
+    document.getElementById('editor-toggle-text').textContent = 'edit site (owner)'; 
+    document.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'false')); 
+    document.body.classList.remove('edit-mode-active'); 
+  } else { 
+    localStorage.setItem('jal_edit_mode', 'true'); 
+    document.getElementById('edit-mode-banner').classList.remove('hidden'); 
+    document.getElementById('editor-toggle-text').textContent = 'exit edit mode'; 
+    document.querySelectorAll('[data-editable-id]').forEach(el => el.setAttribute('contenteditable', 'true')); 
+    document.body.classList.add('edit-mode-active'); 
+  } 
+} 
+
+function saveSiteChanges() { 
+  alert('Site layout and text changes saved successfully!'); 
+  toggleEditMode(); 
+} 
+
+function renderMainCategoryTabs() { 
+  const container = document.getElementById('main-category-tabs-container'); 
+  let html = `<button onclick="filterResourcesByCategory('all')" class="tab-btn ${currentCategoryFilter === 'all' ? 'active' : ''} btn-secondary-scrapbook px-3 py-1.5 rounded-lg text-xs font-bold">✨ all resources</button>`; 
+  mainCategories.forEach(cat => { 
+    const active = currentCategoryFilter === cat.id ? 'active' : ''; 
+    html += `<button onclick="filterResourcesByCategory('${cat.id}')" class="tab-btn ${active} btn-secondary-scrapbook px-3 py-1.5 rounded-lg text-xs font-bold">${cat.name}</button>`; 
+  }); 
+  container.innerHTML = html; 
+} 
+
+function filterResourcesByCategory(catId) { 
+  currentCategoryFilter = catId; 
+  currentSubcategoryFilter = 'all'; 
+  renderMainCategoryTabs(); 
+  renderSubcategoryFilters(); 
+  renderResources(); 
+} 
+
+function renderSubcategoryFilters() { 
+  const container = document.getElementById('subcategory-filters-container'); 
+  if (currentCategoryFilter === 'all' || !subcategories[currentCategoryFilter]) { 
+    container.classList.add('hidden'); 
+    return; 
+  } 
+  container.classList.remove('hidden'); 
+  let html = `<button onclick="filterResourcesBySubcategory('all')" class="sub-tab-btn ${currentSubcategoryFilter === 'all' ? 'active' : ''} px-2.5 py-1 rounded text-xs font-bold border border-[#e8d0d5] bg-white text-gray-600">all subsections</button>`; 
+  subcategories[currentCategoryFilter].forEach(sub => { 
+    const active = currentSubcategoryFilter === sub.id ? 'active bg-[#e5b3be] text-white' : 'bg-white text-gray-600'; 
+    html += `<button onclick="filterResourcesBySubcategory('${sub.id}')" class="sub-tab-btn ${active} px-2.5 py-1 rounded text-xs font-bold border border-[#e8d0d5]">${sub.name}</button>`; 
+  }); 
+  container.innerHTML = html; 
+} 
+
+function filterResourcesBySubcategory(subId) { 
+  currentSubcategoryFilter = subId; 
+  renderSubcategoryFilters(); 
+  renderResources(); 
+} 
+
+function renderResources() { 
+  const grid = document.getElementById('resource-cards-grid'); 
+  let filtered = resources; 
+  if (currentCategoryFilter !== 'all') { 
+    filtered = filtered.filter(r => r.category === currentCategoryFilter); 
+  } 
+  if (currentSubcategoryFilter !== 'all') { 
+    filtered = filtered.filter(r => r.subcategories && r.subcategories.includes(currentSubcategoryFilter)); 
+  } 
+
+  if (filtered.length === 0) { 
+    grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-6 text-xs italic">No worksheets found under this selection.</div>'; 
+    return; 
+  } 
+
+  let html = ''; 
+  filtered.forEach(res => { 
+    const lockBadge = res.isPremium ? '<span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded font-bold">🔒 premium</span>' : '<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold">⭐ free (+'+res.points+' pts)</span>'; 
+    const actionBtn = res.isPremium ? `onclick="openPremiumModal('${res.title}')"` : `onclick="downloadResource(${res.id})"`; 
+    const buttonText = res.isPremium ? 'unlock premium worksheet ↗' : 'download worksheet ↓'; 
+
+    let ownerControls = ''; 
+    if (isCreatorDevice()) { 
+      ownerControls = ` 
+        <div class="flex gap-3 text-[10px] mt-2 pt-2 border-t border-dashed border-gray-200"> 
+          <button onclick="editResource(${res.id})" class="text-blue-600 hover:underline font-bold">✏️ edit resource</button> 
+          <button onclick="deleteResource(${res.id})" class="text-red-600 hover:underline font-bold">🗑️ delete</button> 
+        </div> 
+      `; 
+    } 
+
+    html += ` 
+      <div class="bg-white border-2 border-dashed border-[#e8d0d5] rounded-xl p-4 flex flex-col justify-between shadow-sm"> 
+        <div> 
+          <div class="flex justify-between items-start gap-2 mb-2"> 
+            <h3 class="font-bold text-sm text-[#544e4f]">${res.title}</h3> 
+            ${lockBadge} 
+          </div> 
+          <p class="text-xs text-gray-600 mb-4">${res.desc}</p> 
+        </div> 
+        <div> 
+          <div class="flex justify-between items-center pt-3 border-t border-dashed border-[#e8d0d5]"> 
+            <span class="text-[10px] text-gray-400">${res.date || '2026'}</span> 
+            <button ${actionBtn} class="btn-scrapbook px-3 py-1.5 rounded text-xs font-bold">${buttonText}</button> 
+          </div> 
+          ${ownerControls} 
+        </div> 
+      </div> 
+    `; 
+  }); 
+  grid.innerHTML = html; 
+} 
+
+function downloadResource(id) { 
+  const res = resources.find(r => r.id === id); 
+  if (res && !res.isPremium) { 
+    currentUser.credits = (currentUser.credits || 0) + (res.points || 10); 
+    updateUserUI(); 
+    saveSession(); 
+    alert(`Downloaded "${res.title}" successfully! You earned +${res.points || 10} credits!`); 
+    renderScoreboard(); 
+  } 
+} 
+
+function openPremiumModal(title) { 
+  document.getElementById('premium-title-display').textContent = title; 
+  document.getElementById('premium-modal').classList.remove('hidden'); 
+} 
+
+function closePremiumModal() { 
+  document.getElementById('premium-modal').classList.add('hidden'); 
+} 
+
+function openResourceModal() { 
+  if (!isCreatorDevice()) return; 
+  editingResourceId = null; // Fresh upload mode
+  document.getElementById('res-title').value = ''; 
+  document.getElementById('res-desc').value = ''; 
+  document.getElementById('res-link').value = ''; 
+  document.getElementById('res-is-premium').checked = false; 
+  document.getElementById('file-label-text').textContent = 'choose file...'; 
+  document.getElementById('resource-modal').classList.remove('hidden'); 
+  updateMainCategoryDropdown(); 
+} 
+
+function closeResourceModal() { 
+  document.getElementById('resource-modal').classList.add('hidden'); 
+  editingResourceId = null; 
+} 
+
+function editResource(id) { 
+  if (!isCreatorDevice()) return; 
+  const res = resources.find(r => r.id === id); 
+  if (!res) return; 
+
+  editingResourceId = res.id; 
+  document.getElementById('res-title').value = res.title; 
+  document.getElementById('res-category').value = res.category; 
+  updateSubcategoryCheckboxes(); 
+
+  // Check matching subcategories after checkboxes render
+  setTimeout(() => { 
+    if (res.subcategories) { 
+      res.subcategories.forEach(subId => { 
+        const cb = document.querySelector(`input[name="res_sub"][value="${subId}"]`); 
+        if (cb) cb.checked = true; 
+      }); 
+    } 
+  }, 50); 
+
+  document.getElementById('res-desc').value = res.desc; 
+  document.getElementById('res-is-premium').checked = res.isPremium; 
+  document.getElementById('res-link').value = res.link || ''; 
+  document.getElementById('file-label-text').textContent = res.fileName || 'file attached'; 
+
+  document.getElementById('resource-modal').classList.remove('hidden'); 
+} 
+
+function deleteResource(id) { 
+  if (!isCreatorDevice()) return; 
+  if (confirm("Are you sure you want to delete this resource?")) { 
+    resources = resources.filter(r => r.id !== id); 
+    renderResources(); 
+  } 
+} 
+
+function updateMainCategoryDropdown() { 
+  const select = document.getElementById('res-category'); 
+  let html = ''; 
+  mainCategories.forEach(c => { 
+    html += `<option value="${c.id}">${c.name}</option>`; 
+  }); 
+  select.innerHTML = html; 
+  updateSubcategoryCheckboxes(); 
+} 
+
+function updateSubcategoryCheckboxes() { 
+  const catSelect = document.getElementById('res-category'); 
+  const catId = catSelect.value; 
+  const container = document.getElementById('subcategory-checkboxes-container'); 
+  const subs = subcategories[catId] || []; 
+  let html = ''; 
+  subs.forEach(s => { 
+    html += ` 
+      <label class="flex items-center gap-2 cursor-pointer text-xs"> 
+        <input type="checkbox" name="res_sub" value="${s.id}" class="rounded text-pink-500"> 
+        <span>${s.name}</span> 
+      </label> 
+    `; 
+  }); 
+  container.innerHTML = html; 
+} 
+
+function updateFileName(input) { 
+  if (input.files && input.files[0]) { 
+    document.getElementById('file-label-text').textContent = input.files[0].name; 
+  } 
+} 
+
+function handleResourceUpload(e) { 
+  e.preventDefault(); 
+  const title = document.getElementById('res-title').value.trim(); 
+  const category = document.getElementById('res-category').value; 
+  const desc = document.getElementById('res-desc').value.trim(); 
+  const isPremium = document.getElementById('res-is-premium').checked; 
+  const link = document.getElementById('res-link').value.trim(); 
+
+  const checkboxes = document.querySelectorAll('input[name="res_sub"]:checked'); 
+  let selectedSubs = []; 
+  checkboxes.forEach(cb => selectedSubs.push(cb.value)); 
+
+  if (editingResourceId !== null) { 
+    // Update existing resource 
+    const res = resources.find(r => r.id === editingResourceId); 
+    if (res) { 
+      res.title = title; 
+      res.category = category; 
+      res.subcategories = selectedSubs; 
+      res.desc = desc; 
+      res.isPremium = isPremium; 
+      res.link = link; 
+    } 
+    editingResourceId = null; 
+    alert("Resource updated successfully!"); 
+  } else { 
+    // Create new resource 
+    const newRes = { 
+      id: Date.now(), 
+      title, 
+      category, 
+      subcategories: selectedSubs, 
+      desc, 
+      fileName: document.getElementById('file-label-text').textContent !== 'choose file...' ? document.getElementById('file-label-text').textContent : "uploaded_resource.pdf", 
+      link, 
+      isPremium, 
+      points: 15, 
+      date: new Date().toISOString().split('T')[0] 
+    }; 
+    resources.unshift(newRes); 
+    alert("Resource published successfully!"); 
+  } 
+
+  closeResourceModal(); 
+  renderResources(); 
+} 
+
+function addNewMainCategoryPrompt() { 
+  const name = prompt("Enter new main category name:"); 
+  if (name) { 
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_'); 
+    mainCategories.push({ id, name }); 
+    subcategories[id] = []; 
+    renderMainCategoryTabs(); 
+    updateMainCategoryDropdown(); 
+  } 
+} 
+
+function addNewSubcategoryPrompt() { 
+  const catId = document.getElementById('res-category').value; 
+  const name = prompt("Enter new subcategory name:"); 
+  if (name) { 
+    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_'); 
+    if (!subcategories[catId]) subcategories[catId] = []; 
+    subcategories[catId].push({ id, name }); 
+    updateSubcategoryCheckboxes(); 
+    renderSubcategoryFilters(); 
+  } 
+} 
+
+function requestSubcategoryPrompt() { 
+  const req = prompt("What subcategory or topic would you like to request?"); 
+  if (req) { 
+    alert("Thank you! Your request has been sent to Mihika."); 
+  } 
+} 
+</script>
+</body> 
 </html>
