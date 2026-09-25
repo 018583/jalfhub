@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jour à la fois | my free french resource hub</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Scrapbook Aesthetic Styles -->
+    <style>
+        :root {
+            --bg-pink: #fff0f2;
+            --border-pink: #e8d0d5;
+            --accent-pink: #e5b3be;
+            --dark-accent: #a69598;
+            --badge-dark: #2e353b;
+            --cream-bg: #faf4e1;
+            --cream-border: #dec38a;
+            --text-dark: #544e4f;
+        }
+
+        body {
+            background-color: var(--bg-pink);
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-dark);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff0f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e5b3be;
+            border-radius: 4px;
+        }
+
+        /* Scrapbook paper container */
+        .scrapbook-paper {
+            background-color: #ffffff;
+            box-shadow: 8px 8px 0px rgba(219, 178, 186, 0.4);
+            border: 2px dashed var(--border-pink);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* Scrapbook headings */
+        .scrapbook-title {
+            font-family: 'Arial Black', Gadget, sans-serif;
+            color: #ffffff;
+            text-shadow: 
+                -2px -2px 0 #bfaeb2,  
+                 2px -2px 0 #bfaeb2,
+                -2px  2px 0 #bfaeb2,
+                 2px  2px 0 #bfaeb2,
+                 4px  4px 0px rgba(0,0,0,0.08);
+            text-transform: lowercase;
+            line-height: 0.95;
+        }
+
+        .scrapbook-h2 {
+            font-family: 'Arial Black', Gadget, sans-serif;
+            color: var(--accent-pink); 
+            -webkit-text-stroke: 1px #a69598;
+            text-transform: lowercase;
+        }
+
+        /* Tilted Scrapbook Badges */
+        .translation-badge {
+            background-color: var(--cream-bg);
+            border: 1px dashed var(--cream-border);
+            color: #7a684d;
+            transform: rotate(-1deg);
+        }
+
+        .badge-dark {
+            background-color: var(--badge-dark);
+            color: #f7f1f2;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Custom Scrapbook Buttons */
+        .btn-scrapbook {
+            background-color: var(--accent-pink);
+            color: white;
+            border: 2px solid var(--dark-accent);
+            box-shadow: 3px 3px 0px var(--dark-accent);
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-scrapbook:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px var(--dark-accent);
+            background-color: #dfa4b1;
+        }
+
+        .btn-scrapbook:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px var(--dark-accent);
+        }
+
+        .btn-secondary-scrapbook {
+            background-color: var(--cream-bg);
+            color: #7a684d;
+            border: 2px solid var(--cream-border);
+            box-shadow: 3px 3px 0px var(--cream-border);
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-secondary-scrapbook:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px var(--cream-border);
+            background-color: #f5ebcf;
+        }
+
+        /* Filter Tab buttons */
+        .tab-btn.active {
+            background-color: var(--accent-pink);
+            color: white;
+            border-color: var(--dark-accent);
+            transform: rotate(-1deg);
+        }
+
+        /* Subcategory Pills */
+        .subcat-pill.active {
+            background-color: #2e353b;
+            color: #ffffff;
+            border-color: #2e353b;
+        }
+
+        /* Editable Content Highlight in Edit Mode */
+        .edit-mode-active [contenteditable="true"] {
+            outline: 2px dashed #3b82f6 !important;
+            background-color: rgba(239, 246, 255, 0.7);
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        /* Animated stamp effect */
+        @keyframes stampPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15) rotate(-3deg); }
+            100% { transform: scale(1); }
+        }
+        .stamp-animated {
+            animation: stampPulse 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="py-6 px-3 sm:px-6 min-h-screen flex justify-center items-start">
+
+    <div class="scrapbook-paper w-full max-w-4xl p-4 sm:p-8 md:p-10 my-4">
+
+        <!-- TOP NAVIGATION BAR -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b-2 border-dashed border-[#e8d0d5] pb-5">
+            
+            <!-- Auth Badge & Username -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+                <div id="user-badge-container" class="flex items-center gap-2 bg-[#f7f1f2] border border-[#e8d0d5] px-3 py-1.5 rounded-full text-xs">
+                    <span id="user-avatar-icon" class="w-6 h-6 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xs">?</span>
+                    <span id="username-display" class="font-bold text-[#544e4f]">guest student</span>
+                </div>
+                <button id="auth-btn" onclick="toggleAuthModal()" class="text-xs underline text-[#a69598] hover:text-[#544e4f] font-bold">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i>login / account
+                </button>
+            </div>
+
+            <!-- Credits Tracker & Edit Mode Switch -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                <div id="credits-badge" class="translation-badge px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 text-sm"></i>
+                    <span>credits:</span>
+                    <span id="credits-balance" class="text-base text-pink-600 font-black">0</span>
+                    <span class="text-[10px] text-gray-500 font-normal">pts</span>
+                </div>
+
+                <button id="editor-toggle-btn" onclick="toggleEditMode()" class="btn-secondary-scrapbook px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="editor-toggle-text">edit site</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- TITLE & SUBTITLE HEADER -->
+        <div class="text-center mb-6">
+            <h1 class="scrapbook-title text-4xl sm:text-5xl md:text-6xl mb-2" contenteditable="false" data-editable-id="site-title">
+                jour à la fois
+            </h1>
+            <!-- Brown text translation with no box -->
+            <div class="text-[#7a684d] text-xs sm:text-sm font-bold tracking-wider mb-3" contenteditable="false" data-editable-id="site-translation">
+                translation: one day at a time
+            </div>
+            
+            <div class="bg-[#f7f1f2] p-3 rounded-2xl text-center text-xs sm:text-sm text-[#595354] max-w-xl mx-auto border border-[#e8d0d5]" contenteditable="false" data-editable-id="site-intro-tag">
+                french worksheets, topic-wise resources and grammar help, for students–and by a student! &lt;3
+            </div>
+        </div>
+
+        <!-- HIGHLIGHTED FREE RESOURCES NOTICE BANNER -->
+        <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-3.5 mb-8 text-center text-xs font-bold text-[#7a684d] shadow-sm transform -rotate-1">
+            <span class="bg-[#e5b3be] text-white px-2 py-0.5 rounded text-[10px] mr-1 uppercase tracking-wide">notice</span>
+            <span contenteditable="false" data-editable-id="highlighted-notice-text">
+                ✦ these are <u>100% free</u> worksheets &amp; language tips! if you want custom / personalized worksheets made for you, check out my rates and check the premium worksheets out below ! ✦
+            </span>
+        </div>
+
+        <!-- EDIT MODE CONTROL PANEL (Shows when editing) -->
+        <div id="edit-mode-banner" class="hidden mb-6 p-4 bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg text-xs text-blue-800">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-500 text-base"></i>
+                    <div>
+                        <strong>owner edit mode enabled!</strong>
+                        <p class="text-[11px] text-blue-600">click blue text to edit directly. attach pdfs or add new worksheets anytime.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openResourceModal()" class="bg-blue-600 text-white px-3 py-1.5 rounded font-bold hover:bg-blue-700">
+                        <i class="fa-solid fa-plus mr-1"></i>attach pdf / resource
+                    </button>
+                    <button onclick="saveSiteChanges()" class="bg-emerald-600 text-white px-3 py-1.5 rounded font-bold hover:bg-emerald-700">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i>save layout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT ME & CREDENTIALS SECTION -->
+        <section class="mb-10 bg-white p-5 border-2 border-dashed border-[#e8d0d5] rounded-xl relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3">
+                <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">about me &amp; credentials</h2>
+                
+                <!-- See More Rates Button next to About section -->
+                <a id="rates-btn-link" href="https://jouuralafois.netlify.app" target="_blank" class="btn-secondary-scrapbook px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2">
+                    <span>see rates &amp; more...</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                </a>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-5">
+                <!-- Text Bio -->
+                <div class="flex-1 text-xs sm:text-sm leading-relaxed text-[#544e4f]">
+                    <p contenteditable="false" data-editable-id="about-bio-text">
+                        hi, i'm <u class="decoration-pink-400 font-bold">mihika</u>! i'm a 9th grader taking IGCSE french, and i've BEEN knowing about how annoying it is when you've finished all your homework and then your french book stares up at you like a demon rising from the ashes. <b>learning french shouldn't make you <i>or</i> your bank account cry!</b>
+                    </p>
+                </div>
+
+                <!-- DELF A2 Certified Badge next to the text -->
+                <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] p-3 rounded-xl shadow-sm text-center transform rotate-2 shrink-0 min-w-[160px]">
+                    <i class="fa-solid fa-award text-3xl text-[#e5b3be] mb-1"></i>
+                    <div class="text-xs font-bold text-[#7a684d] uppercase">delf a2 certified</div>
+                    <div class="text-[10px] text-gray-500">passed with merit ♡</div>
+                    <span class="inline-block mt-1 bg-[#e5b3be] text-white text-[9px] px-2 py-0.5 rounded-full font-bold">b1 in progress!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDENT CHATROOM PREVIEW SECTION (COMPACT PREVIEW OF 2 LATEST MESSAGES) -->
+        <section id="chat-section" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                <div>
+                    <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">student chatroom</h2>
+                    <p class="text-xs text-gray-500">ask french questions, get homework help, or chat with other learners!</p>
+                </div>
+                <!-- See Full Chatroom Button -->
+                <button onclick="openFullChatroom()" class="btn-secondary-scrapbook px-3.5 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-[#7a684d] fa-comments text-pink-400"></i>
+                    <span>expand chatroom ↗</span>
+                </button>
+            </div>
+
+            <!-- COMPACT PREVIEW BOX (Displays 2 Latest Messages) -->
+            <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-xl p-4 shadow-inner relative">
+                <div class="flex justify-between items-center mb-3 pb-2 border-b border-dashed border-[#dec38a]">
+                    <span class="text-[11px] font-bold text-[#7a684d] uppercase tracking-wide flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        recent community chatter (latest 2 messages)
+                    </span>
+                    <span class="text-[10px] text-gray-500">public space</span>
+                </div>
+
+                <!-- Preview Messages Container -->
+                <div id="chat-preview-container" class="space-y-2.5 mb-3">
+                    <!-- Top 2 latest messages injected dynamically -->
+                </div>
+
+                <!-- Footer Action to Open Fullscreen Chat -->
+                <div class="pt-2 border-t border-dashed border-[#dec38a] flex justify-between items-center">
+                    <span class="text-[11px] text-gray-500 italic">want to join the conversation?</span>
+                    <button onclick="openFullChatroom()" class="btn-scrapbook px-4 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                        <span>see full chatroom &amp; reply...</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESOURCE HUB SECTION -->
+        <section id="resources" class="mb-10 border-t-2 border-dashed border-[#e8d0d5] pt-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">free resource hub</h2>
+                    <p class="text-xs text-gray-500">download pdfs, study grammar, and earn credits for every worksheet!</p>
+                </div>
+
+                <!-- Teams-Style Upload PDF Button -->
+                <button onclick="openResourceModal()" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded-md flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                    <span>+ attach pdf / resource</span>
+                </button>
+            </div>
+
+            <!-- MAIN CATEGORY TABS -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button onclick="switchCategory('all')" class="tab-btn active px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] transition-all">
+                    ✨ all resources
+                </button>
+                <button onclick="switchCategory('topic')" class="tab-btn px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] bg-[#faf4e1] text-[#7a684d] transition-all">
+                    📌 topic worksheets
+                </button>
+                <button onclick="switchCategory('grammar')" class="tab-btn px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] bg-[#faf4e1] text-[#7a684d] transition-all">
+                    📐 grammar worksheets
+                </button>
+                <button onclick="switchCategory('newsletter')" class="tab-btn px-3.5 py-1.5 rounded-md text-xs font-bold border border-[#a69598] bg-[#faf4e1] text-[#7a684d] transition-all">
+                    💡 tips &amp; newsletter
+                </button>
+            </div>
+
+            <!-- SUBCATEGORY FILTER PILLS (Dynamically visible based on active category) -->
+            <div id="subcategory-filters" class="flex flex-wrap gap-2 mb-6 p-3 bg-[#f7f1f2] rounded-lg border border-[#e8d0d5]">
+                <span class="text-[11px] font-bold text-[#7a684d] self-center mr-1">subcategories:</span>
+            <!-- Bottom Call to Actions & Social Links -->
+            <div class="mt-12 bg-amber-900/10 border-2 border-dashed border-amber-800/30 rounded-2xl p-6 sm:p-8 text-center space-y-6 max-w-2xl mx-auto shadow-sm">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-amber-800/10 text-amber-900 font-bold rounded-full text-xs uppercase tracking-wider mb-2">Restons en contact</span>
+                    <h3 class="font-serif font-bold text-2xl text-amber-950">Rejoins la communauté "jour à la fois" !</h3>
+                    <p class="text-amber-900 text-sm mt-1 max-w-md mx-auto">Reçois de nouvelles fiches chaque semaine et débloque du contenu exclusif pour perfectionner ton français.</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                    <button onclick="document.getElementById('newsletter-modal').classList.remove('hidden')" class="w-full sm:w-auto px-6 py-3 bg-amber-800 hover:bg-amber-900 text-amber-50 font-medium rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                        <i class="fas me-2 fa-envelope"></i>
+                        <span>S'abonner à la Newsletter</span>
+                    </button>
+                    
+                    <!-- NEW SECONDARY SIGNUP SHEET BUTTON -->
+                    <button onclick="document.getElementById('secondary-signup-modal').classList.remove('hidden')" class="w-full sm:w-auto px-6 py-3 bg-amber-700/20 hover:bg-amber-700/30 text-amber-950 border border-amber-800/40 font-medium rounded-xl transition duration-200 flex items-center justify-center gap-2">
+                        <i class="fas fa-file-signature text-amber-800"></i>
+                        <span>Demander une Fiche Exclussource</span>
+                    </button>
+
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-6 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-800/20 font-medium rounded-xl transition duration-200 flex items-center justify-center gap-2">
+                        <i class="fab fa-instagram text-pink-700 text-lg"></i>
+                        <span>Suivre sur Instagram</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 text-center text-xs text-amber-800/60 font-mono">
+                <p>© 2026 jour à la fois — Un jour à la fois, une leçon à la fois.</p>
+            </footer>
+        </div>
+    </main>
+
+    <!-- SECONDARY DEDICATED SIGNUP MODAL SHEET -->
+    <div id="secondary-signup-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-amber-50 rounded-2xl max-w-md w-full p-6 sm:p-8 border-2 border-amber-800/30 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="document.getElementById('secondary-signup-modal').classList.add('hidden')" class="absolute top-4 right-4 text-amber-800/60 hover:text-amber-950 text-xl font-bold p-1">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-amber-800/10 rounded-full flex items-center justify-center mx-auto text-amber-800 mb-3 text-xl">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <h3 class="font-serif font-bold text-2xl text-amber-950">Fiche sur Mesure / Inscription</h3>
+                <p class="text-xs text-amber-900/80 mt-1">Inscris-toi pour recevoir directement des fiches ciblées ou demander un sujet de grammaire précis.</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); document.getElementById('secondary-signup-modal').classList.add('hidden'); alert('Merci ! Votre demande/inscription a bien été prise en compte.');" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Prénom & Nom</label>
+                    <input type="text" required placeholder="Ex: Marie Dupont" class="w-full px-4 py-2.5 bg-amber-100/50 border border-amber-800/30 rounded-xl focus:ring-2 focus:ring-amber-800 focus:outline-none text-amber-950 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Adresse E-mail</label>
+                    <input type="email" required placeholder="marie@example.com" class="w-full px-4 py-2.5 bg-amber-100/50 border border-amber-800/30 rounded-xl focus:ring-2 focus:ring-amber-800 focus:outline-none text-amber-950 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Sujet / Niveau souhaité (Optionnel)</label>
+                    <select class="w-full px-4 py-2.5 bg-amber-100/50 border border-amber-800/30 rounded-xl focus:ring-2 focus:ring-amber-800 focus:outline-none text-amber-950 text-sm">
+                        <option>A1 - Débutant complet</option>
+                        <option selected>A2 - Niveau Fiches jour à la fois</option>
+                        <option>B1/B2 - Intermédiaire</option>
+                        <option>Demande de cours particuliers</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-3 bg-amber-800 hover:bg-amber-900 text-amber-50 font-bold rounded-xl transition duration-200 shadow-md mt-2">
+                    Envoyer ma demande
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Premium Access Request -->
+    <div id="premium-request-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white text-center">
+            <button onclick="closePremiumModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+            
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xl mx-auto mb-3 border border-amber-300">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <h3 class="scrapbook-h2 text-2xl mb-1">premium worksheet</h3>
+            <p class="text-xs text-gray-600 mb-4" id="premium-modal-item-title">custom IGCSE topical practice</p>
+
+            <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] p-3 rounded-lg text-xs text-[#7a684d] mb-4 text-left leading-relaxed">
+                <b>how to unlock:</b>
+                <ul class="list-disc pl-4 mt-1 space-y-1">
+                    <li>message me on instagram: <b>@jouuralafois</b></li>
+                    <li>or email: <b>mihikayashwanth@gmail.com</b></li>
+                    <li>pay via UPI/bank transfer to receive instant access!</li>
+                </ul>
+            </div>
+
+            <a id="premium-contact-link" href="https://www.instagram.com/jouuralafois/" target="_blank" onclick="closePremiumModal()" class="btn-scrapbook w-full py-2.5 text-xs font-bold rounded inline-block">
+                <i class="fa-brands fa-instagram mr-1"></i> send dm for payment details
+            </a>
+        </div>
+    </div>
+
+    <!-- MODAL: User Auth Account Signup -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white">
+            <button onclick="toggleAuthModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+            
+            <h3 class="scrapbook-h2 text-2xl text-center mb-1">student account</h3>
+            <p class="text-xs text-center text-gray-500 mb-6">create a profile to save credits &amp; chat!</p>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">student username</label>
+                    <input type="text" id="auth-username" placeholder="e.g. claire_french9" required
+                        class="w-full px-3 py-2 text-xs border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">email address</label>
+                    <input type="email" id="auth-email" placeholder="student@school.com" required
+                        class="w-full px-3 py-2 text-xs border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                </div>
+                
+                <button type="submit" class="btn-scrapbook w-full py-2.5 text-xs font-bold rounded mt-2">
+                    save &amp; start learning
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Teams-Style PDF Resource Attachment Uploader -->
+    <div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="scrapbook-paper w-full max-w-md p-6 relative bg-white">
+            <button onclick="closeResourceModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+            
+            <h3 class="scrapbook-h2 text-2xl text-center mb-1">attach pdf / resource</h3>
+            <p class="text-xs text-center text-gray-500 mb-4">upload saved pdfs or worksheets for students</p>
+
+            <form id="upload-resource-form" onsubmit="handleResourceUpload(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-600 mb-1">resource title</label>
+                    <input type="text" id="res-title" placeholder="e.g. food & dining vocab practice" required
+                        class="w-full px-3 py-2 border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">main category</label>
+                        <select id="res-category" onchange="updateModalSubcatOptions()" class="w-full px-3 py-2 border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                            <option value="topic">📌 Topic Worksheet</option>
+                            <option value="grammar">📐 Grammar Worksheet</option>
+                            <option value="newsletter">💡 Tip / Newsletter</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">subcategory</label>
+                        <select id="res-subcategory" class="w-full px-3 py-2 border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                            <!-- Options populated dynamically based on category -->
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-600 mb-1">short description</label>
+                    <textarea id="res-desc" rows="2" placeholder="brief summary of what students will practice..." required
+                        class="w-full px-3 py-2 border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]"></textarea>
+                </div>
+
+                <!-- Premium Paid Toggle -->
+                <div class="flex items-center gap-2 p-2 bg-[#faf4e1] border border-[#dec38a] rounded">
+                    <input type="checkbox" id="res-is-premium" class="accent-pink-500">
+                    <label for="res-is-premium" class="font-bold text-gray-700">mark as 🔒 premium (paid) worksheet</label>
+                </div>
+
+                <!-- Drag & Drop PDF File Box -->
+                <div>
+                    <label class="block font-bold text-gray-600 mb-1">attach pdf file / document</label>
+                    <div id="drop-zone" class="border-2 border-dashed border-[#e5b3be] bg-[#fff0f2] p-4 text-center rounded-lg cursor-pointer hover:bg-pink-100 transition-all">
+                        <i class="fa-solid fa-file-pdf text-2xl text-[#e5b3be] mb-1"></i>
+                        <p class="text-[11px] font-bold text-gray-600" id="file-label-text">click or drag &amp; drop pdf here</p>
+                        <p class="text-[10px] text-gray-400">supports .pdf, .docx, or images</p>
+                        <input type="file" id="res-file-input" accept=".pdf,.doc,.docx,.png,.jpg" class="hidden" onchange="handleFileSelect(event)">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-600 mb-1">or google drive / direct link (optional)</label>
+                    <input type="url" id="res-link" placeholder="https://drive.google.com/..."
+                        class="w-full px-3 py-2 border border-[#e8d0d5] rounded focus:outline-none focus:border-[#e5b3be]">
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeResourceModal()" class="flex-1 py-2 border border-gray-300 rounded font-bold text-gray-600">cancel</button>
+                    <button type="submit" class="btn-scrapbook flex-1 py-2 rounded font-bold">publish resource</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-notification" class="hidden fixed bottom-6 right-6 z-50 bg-[#2e353b] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-[#e5b3be]">
+        <div id="toast-icon" class="text-amber-400 text-lg">
+            <i class="fa-solid fa-star"></i>
+        </div>
+        <div>
+            <div id="toast-title" class="font-bold text-xs text-pink-200">credits earned!</div>
+            <div id="toast-message" class="text-[11px] text-gray-300">you got +15 points!</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'jour-a-la-fois-app';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+
+        // Subcategories definitions
+        const SUBCATEGORIES = {
+            topic: [
+                { id: 'all', label: 'all topics' },
+                { id: 'healthy_lifestyle', label: '🍎 a healthy lifestyle' },
+                { id: 'food', label: '🥐 food & dining' },
+                { id: 'travel', label: '✈️ travel & holidays' },
+                { id: 'school', label: '📚 school & hobbies' }
+            ],
+            grammar: [
+                { id: 'all', label: 'all grammar' },
+                { id: 'tenses', label: '⏳ tenses (présent, passé composé, etc.)' },
+                { id: 'pronouns', label: '🔄 pronouns (COD, COI, y, en)' },
+                { id: 'articles', label: '📝 articles & adjectives' },
+                { id: 'structure', label: '🧩 sentence structure' }
+            ],
+            newsletter: [
+                { id: 'all', label: 'all tips & posts' },
+                { id: 'study_tips', label: '💡 exam & study tips' },
+                { id: 'newsletters', label: '📬 weekly newsletters' }
+            ]
+        };
+
+        // Application State
+        let state = {
+            username: 'guest student',
+            credits: 0,
+            completedResources: [],
+            isEditMode: false,
+            activeCategory: 'all',
+            activeSubcategory: 'all',
+            resources: [
+                // Topic Worksheets
+                {
+                    id: 'res-t1',
+                    title: 'une vie saine - healthy lifestyle worksheet',
+                    category: 'topic',
+                    subcategory: 'healthy_lifestyle',
+                    desc: 'vocabulary exercises, diet vs exercise translations, and health advice in french.',
+                    credits: 15,
+                    fileUrl: '#',
+                    fileName: 'healthy_lifestyle_worksheet.pdf',
+                    isPremium: false
+                },
+                {
+                    id: 'res-t2',
+                    title: 'au restaurant & la nourriture',
+                    category: 'topic',
+                    subcategory: 'food',
+                    desc: 'ordering food, partitive articles (du, de la, des), and menu reading exercises.',
+                    credits: 15,
+                    fileUrl: '#',
+                    fileName: 'food_dining_french.pdf',
+                    isPremium: false
+                },
+                {
+                    id: 'res-t3',
+                    title: 'les vacances & le tourisme (custom bundle)',
+                    category: 'topic',
+                    subcategory: 'travel',
+                    desc: 'igcse travel vocabulary, hotel bookings, and writing a holiday postcard.',
+                    credits: 15,
+                    fileUrl: '#',
+                    fileName: 'travel_holidays_french.pdf',
+                    isPremium: true
+                },
+
+                // Grammar Worksheets
+                {
+                    id: 'res-g1',
+                    title: 'le passé composé vs l\'imparfait',
+                    category: 'grammar',
+                    subcategory: 'tenses',
+                    desc: 'clear guide on when to use completed actions vs ongoing past descriptions with practice sentences.',
+                    credits: 15,
+                    fileUrl: '#',
+                    fileName: 'passe_compose_imparfait.pdf',
+                    isPremium: false
+                },
+                {
+                    id: 'res-g2',
+                    title: 'pronoms relatifs & objets (COD / COI)',
+                    category: 'grammar',
+                    subcategory: 'pronouns',
+                    desc: 'mastering le, la, les, lui, leur, y, and en without losing your mind!',
+                    credits: 15,
+                    fileUrl: '#',
+                    fileName: 'french_pronouns_cheatsheet.pdf',
+                    isPremium: false
+                },
+
+                // Newsletter & Tips
+                {
+                    id: 'res-n1',
+                    title: 'how i passed delf a2 & study guide',
+                    category: 'newsletter',
+                    subcategory: 'study_tips',
+                    desc: 'my exact 3-week study routine, listening practice hacks, and speaking templates.',
+                    credits: 10,
+                    fileUrl: '#',
+                    fileName: 'delf_a2_prep_guide.pdf',
+                    isPremium: false
+                }
+            ],
+            messages: [
+                {
+                    id: 'm1',
+                    user: 'mihika (creator)',
+                    avatar: 'M',
+                    text: 'coucou tout le monde! welcome to the free hub <3 ask any french question or practice here!',
+                    time: '10:00 am'
+                },
+                {
+                    id: 'm2',
+                    user: 'chloe_a2',
+                    avatar: 'C',
+                    text: 'the passé composé vs imparfait sheet was a lifesaver for my quiz today, merci!!',
+                    time: '10:24 am'
+                }
+            ]
+        };
+
+        // Firebase Sync Setup
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUser = user;
+                        setupFirestoreSync();
+                    }
+                });
+            }
+        } catch (err) {
+            console.warn("Firestore running in local mode:", err);
+        }
+
+        function setupFirestoreSync() {
+            if (!db || !currentUser) return;
+
+            // User Profile
+            const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'userData');
+            onSnapshot(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    state.credits = data.credits || 0;
+                    state.username = data.username || 'guest student';
+                    state.completedResources = data.completedResources || [];
+                    updateUI();
+                } else {
+                    setDoc(userRef, {
+                        username: state.username,
+                        credits: state.credits,
+                        completedResources: []
+                    });
+                }
+            }, err => console.error("User sync error:", err));
+
+            // Chatroom Messages
+            const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'chatMessages');
+            onSnapshot(messagesRef, (snapshot) => {
+                const msgs = [];
+                snapshot.forEach(doc => msgs.push({ id: doc.id, ...doc.data() }));
+                if (msgs.length > 0) {
+                    state.messages = msgs;
+                    renderChatMessages();
+                }
+            }, err => console.error("Chat sync error:", err));
+        }
+
+        async function saveUserData() {
+            if (db && currentUser) {
+                const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'userData');
+                await setDoc(userRef, {
+                    username: state.username,
+                    credits: state.credits,
+                    completedResources: state.completedResources
+                }, { merge: true });
+            }
+            updateUI();
+        }
+
+        // UI Refresh Functions
+        window.updateUI = function() {
+            const creditsEl = document.getElementById('credits-balance');
+            const userDisplay = document.getElementById('username-display');
+            const avatarIcon = document.getElementById('user-avatar-icon');
+
+            if (creditsEl) creditsEl.textContent = state.credits;
+            if (userDisplay) userDisplay.textContent = state.username;
+            if (avatarIcon) avatarIcon.textContent = state.username.charAt(0).toUpperCase();
+
+            renderSubcategoryFilters();
+            renderResources();
+            renderChatMessages();
+        };
+
+        // Render Subcategory Filter Pills
+        function renderSubcategoryFilters() {
+            const container = document.getElementById('subcategory-filters');
+            if (!container) return;
+
+            if (state.activeCategory === 'all') {
+                container.innerHTML = `
+                    <span class="text-[11px] text-gray-500 italic">select "topic", "grammar", or "newsletter" above to filter by specific subcategories!</span>
+                `;
+                return;
+            }
+
+            const list = SUBCATEGORIES[state.activeCategory] || [];
+            container.innerHTML = `
+                <span class="text-[11px] font-bold text-[#7a684d] self-center mr-1">subcategories:</span>
+                ${list.map(sub => `
+                    <button onclick="switchSubcategory('${sub.id}')" 
+                        class="subcat-pill ${state.activeSubcategory === sub.id ? 'active' : ''} text-[11px] font-bold px-3 py-1 rounded-full border border-[#dec38a] bg-white text-[#7a684d] transition-all">
+                        ${sub.label}
+                    </button>
+                `).join('')}
+            `;
+        }
+
+        // Render Resource Cards Grid
+        function renderResources() {
+            const grid = document.getElementById('resource-grid');
+            if (!grid) return;
+
+            const filtered = state.resources.filter(res => {
+                const matchesCat = state.activeCategory === 'all' || res.category === state.activeCategory;
+                const matchesSub = state.activeSubcategory === 'all' || res.subcategory === state.activeSubcategory;
+                return matchesCat && matchesSub;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-2 text-center py-8 bg-[#faf4e1] border border-dashed border-[#dec38a] rounded-lg text-xs text-gray-500">
+                        no worksheets found in this subcategory yet! click "+ attach pdf" above to add one.
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(res => {
+                const isCompleted = state.completedResources.includes(res.id);
+                return `
+                    <div class="bg-white border-2 border-dashed border-[#e8d0d5] p-5 rounded-xl shadow-sm relative flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="flex justify-between items-start gap-2 mb-2">
+                                <span class="bg-[#faf4e1] text-[#7a684d] border border-dashed border-[#dec38a] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                    ${res.category === 'topic' ? '📌 topic worksheet' : res.category === 'grammar' ? '📐 grammar worksheet' : '💡 tip / newsletter'}
+                                </span>
+                                
+                                ${res.isPremium ? `
+                                    <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300 flex items-center gap-1">
+                                        <i class="fa-solid fa-lock text-[9px]"></i> premium (paid)
+                                    </span>
+                                ` : `
+                                    <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                        +${res.credits} credits
+                                    </span>
+                                `}
+                            </div>
+
+                            <h3 class="font-bold text-sm text-[#544e4f] mb-1 leading-snug">${res.title}</h3>
+                            <p class="text-xs text-gray-600 mb-4 leading-relaxed">${res.desc}</p>
+                        </div>
+
+                        <div>
+                            ${res.isPremium ? `
+                                <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200 flex items-center justify-between text-xs mb-3">
+                                    <div class="flex items-center gap-2 overflow-hidden pr-2">
+                                        <i class="fa-solid fa-lock text-amber-500 text-sm"></i>
+                                        <span class="truncate font-semibold text-amber-900 text-[11px]">${res.fileName || 'custom_worksheet.pdf'}</span>
+                                    </div>
+                                    <button onclick="openPremiumModal('${res.title}')" class="text-xs font-bold text-amber-700 underline hover:text-amber-900">
+                                        details 🔒
+                                    </button>
+                                </div>
+
+                                <button onclick="openPremiumModal('${res.title}')" 
+                                    class="btn-secondary-scrapbook w-full py-2 text-xs font-bold rounded flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-lock text-amber-600"></i>
+                                    <span>request access 🔒</span>
+                                </button>
+                            ` : `
+                                <div class="bg-[#f7f1f2] p-2.5 rounded-lg border border-[#e8d0d5] flex items-center justify-between text-xs mb-3">
+                                    <div class="flex items-center gap-2 overflow-hidden pr-2">
+                                        <i class="fa-solid fa-file-pdf text-pink-400 text-sm"></i>
+                                        <span class="truncate font-semibold text-gray-700 text-[11px]">${res.fileName || 'worksheet.pdf'}</span>
+                                    </div>
+                                    <a href="${res.fileUrl}" target="_blank" download="${res.fileName}" class="text-xs font-bold text-pink-500 hover:underline flex items-center gap-1">
+                                        <span>view pdf</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                    </a>
+                                </div>
+
+                                <button onclick="markResourceComplete('${res.id}', ${res.credits})" 
+                                    class="${isCompleted ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'btn-scrapbook'} w-full py-2 text-xs font-bold rounded flex items-center justify-center gap-2">
+                                    <i class="fa-solid ${isCompleted ? 'fa-circle-check text-emerald-600' : 'fa-star'}"></i>
+                                    <span>${isCompleted ? 'completed (+15 earned)' : 'mark completed (+' + res.credits + ' pts)'}</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Chatroom Messages (Both Compact 2-Message Preview and Full View)
+        function renderChatMessages() {
+            const previewContainer = document.getElementById('chat-preview-container');
+            const fullContainer = document.getElementById('full-chat-messages-container');
+
+            // Render 2 latest messages for compact preview
+            if (previewContainer) {
+                const recentTwo = state.messages.slice(-2);
+                previewContainer.innerHTML = recentTwo.map(msg => `
+                    <div class="flex items-start gap-2.5 text-xs">
+                        <div class="w-6 h-6 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-[10px] shrink-0 border border-white shadow-sm">
+                            ${msg.avatar || msg.user.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="bg-white border border-[#dec38a] p-2.5 rounded-xl rounded-tl-none shadow-sm flex-1">
+                            <div class="flex items-center justify-between gap-2 mb-0.5">
+                                <span class="font-bold text-[#544e4f] text-[11px]">${msg.user}</span>
+                                <span class="text-[9px] text-gray-400">${msg.time}</span>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed text-xs line-clamp-2">${msg.text}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Render complete list of messages for full view overlay
+            if (fullContainer) {
+                fullContainer.innerHTML = state.messages.map(msg => `
+                    <div class="flex items-start gap-3 text-xs">
+                        <div class="w-8 h-8 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xs shrink-0 border border-white shadow-sm">
+                            ${msg.avatar || msg.user.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="bg-white border border-[#dec38a] p-3.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%]">
+                            <div class="flex items-center justify-between gap-3 mb-1">
+                                <span class="font-bold text-[#544e4f] text-xs">${msg.user}</span>
+                                <span class="text-[10px] text-gray-400">${msg.time}</span>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed text-xs">${msg.text}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                fullContainer.scrollTop = fullContainer.scrollHeight;
+            }
+        }
+
+        // Full Chatroom Overlay Toggle Controls
+        window.openFullChatroom = function() {
+            document.getElementById('full-chat-overlay').classList.remove('hidden');
+            renderChatMessages();
+        };
+
+        window.closeFullChatroom = function() {
+            document.getElementById('full-chat-overlay').classList.add('hidden');
+        };
+
+        // Premium Lock Request Modal
+        window.openPremiumModal = function(title) {
+            document.getElementById('premium-modal-item-title').textContent = title;
+            document.getElementById('premium-request-modal').classList.remove('hidden');
+            showToast("Access Request Initiated", "Check payment details to unlock!", "fa-lock");
+        };
+
+        window.closePremiumModal = function() {
+            document.getElementById('premium-request-modal').classList.add('hidden');
+        };
+
+        // Actions & Interactions
+        window.markResourceComplete = async function(id, reward) {
+            if (state.completedResources.includes(id)) {
+                showToast("Already Completed", "You have already earned credits for this worksheet!", "fa-circle-info");
+                return;
+            }
+
+            state.completedResources.push(id);
+            state.credits += reward;
+
+            const badge = document.getElementById('credits-badge');
+            if (badge) badge.classList.add('stamp-animated');
+            setTimeout(() => badge?.classList.remove('stamp-animated'), 400);
+
+            showToast("Credits Earned! 🎉", `+${reward} points added to your balance!`, "fa-star");
+            await saveUserData();
+        };
+
+        window.handleSendChatMessage = async function(e) {
+            e.preventDefault();
+            const inputFull = document.getElementById('full-chat-input-text');
+            const text = inputFull ? inputFull.value.trim() : '';
+            if (!text) return;
+
+            const newMsg = {
+                user: state.username,
+                avatar: state.username.charAt(0).toUpperCase(),
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            if (db && currentUser) {
+                const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'chatMessages');
+                await addDoc(messagesRef, newMsg);
+            } else {
+                state.messages.push(newMsg);
+                renderChatMessages();
+            }
+
+            if (inputFull) inputFull.value = '';
+        };
+
+        // Switch Main Categories and Subcategories
+        window.switchCategory = function(cat) {
+            state.activeCategory = cat;
+            state.activeSubcategory = 'all';
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            updateUI();
+        };
+
+        window.switchSubcategory = function(sub) {
+            state.activeSubcategory = sub;
+            renderSubcategoryFilters();
+            renderResources();
+        };
+
+        // Handle Teams-style PDF upload
+        window.handleResourceUpload = function(e) {
+            e.preventDefault();
+            const title = document.getElementById('res-title').value;
+            const category = document.getElementById('res-category').value;
+            const subcategory = document.getElementById('res-subcategory').value;
+            const desc = document.getElementById('res-desc').value;
+            const link = document.getElementById('res-link').value;
+            const isPremium = document.getElementById('res-is-premium').checked;
+            const fileInput = document.getElementById('res-file-input');
+
+            let fileName = 'worksheet.pdf';
+            let fileUrl = link || '#';
+
+            if (fileInput.files && fileInput.files[0]) {
+                fileName = fileInput.files[0].name;
+                fileUrl = URL.createObjectURL(fileInput.files[0]);
+            }
+
+            const newRes = {
+                id: 'res-' + Date.now(),
+                title: title.toLowerCase(),
+                category: category,
+                subcategory: subcategory,
+                desc: desc,
+                credits: 15,
+                fileUrl: fileUrl,
+                fileName: fileName,
+                isPremium: isPremium
+            };
+
+            state.resources.unshift(newRes);
+            renderResources();
+            closeResourceModal();
+            showToast("Resource Published!", `"${title}" is now available in the hub.`, "fa-circle-check");
+        };
+
+        window.updateModalSubcatOptions = function() {
+            const cat = document.getElementById('res-category').value;
+            const subSelect = document.getElementById('res-subcategory');
+            const list = SUBCATEGORIES[cat] || [];
+
+            subSelect.innerHTML = list.filter(s => s.id !== 'all').map(s => `
+                <option value="${s.id}">${s.label}</option>
+            `).join('');
+        };
+
+        window.handleFileSelect = function(e) {
+            const label = document.getElementById('file-label-text');
+            if (e.target.files && e.target.files[0]) {
+                label.textContent = `Attached: ${e.target.files[0].name}`;
+            }
+        };
+
+        window.toggleEditMode = function() {
+            state.isEditMode = !state.isEditMode;
+            document.body.classList.toggle('edit-mode-active', state.isEditMode);
+            document.getElementById('edit-mode-banner').classList.toggle('hidden', !state.isEditMode);
+            document.getElementById('editor-toggle-text').textContent = state.isEditMode ? 'view site' : 'edit site';
+
+            document.querySelectorAll('[data-editable-id]').forEach(el => {
+                el.contentEditable = state.isEditMode ? "true" : "false";
+            });
+
+            showToast(
+                state.isEditMode ? "Edit Mode Active" : "Preview Mode Active",
+                state.isEditMode ? "Click any text element to edit directly!" : "View mode enabled.",
+                "fa-pen-to-square"
+            );
+        };
+
+        window.saveSiteChanges = function() {
+            toggleEditMode();
+            showToast("Layout Saved!", "Your site customizations are saved.", "fa-floppy-disk");
+        };
+
+        function showToast(title, msg, iconClass) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = msg;
+            document.getElementById('toast-icon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        window.toggleAuthModal = function() {
+            document.getElementById('auth-modal').classList.toggle('hidden');
+        };
+
+        window.openResourceModal = function() {
+            updateModalSubcatOptions();
+            document.getElementById('resource-modal').classList.remove('hidden');
+        };
+
+        window.closeResourceModal = function() {
+            document.getElementById('resource-modal').classList.add('hidden');
+        };
+
+        window.handleAuthSubmit = async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('auth-username').value.trim();
+            if (username) {
+                state.username = username;
+                await saveUserData();
+                toggleAuthModal();
+                showToast("Welcome!", `Signed in as ${username}`, "fa-user-check");
+            }
+        };
+
+        window.onload = function() {
+            updateUI();
+            const dropZone = document.getElementById('drop-zone');
+            if (dropZone) dropZone.onclick = () => document.getElementById('res-file-input').click();
+        };
+    </script>
+</body>
+</html>
