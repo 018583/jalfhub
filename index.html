@@ -195,7 +195,7 @@
                     <i class="fa-solid fa-circle-info text-blue-500 text-base"></i>
                     <div>
                         <strong>owner edit mode enabled!</strong>
-                        <p class="text-[11px] text-blue-600">click blue text to edit directly. attach pdfs or manage categories anytime.</p>
+                        <p class="text-[11px] text-blue-600">click text to edit directly. edit full attachments or manage categories anytime.</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -213,7 +213,7 @@
         <section class="mb-10 bg-white p-5 border-2 border-dashed border-[#e8d0d5] rounded-xl relative">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3">
                 <h2 class="scrapbook-h2 text-2xl sm:text-3xl text-left">about me &amp; credentials</h2>
-                <a id="rates-btn-link" href="https://018583.github.io/jouralafois/p" target="_blank" class="btn-secondary-scrapbook px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2">
+                <a id="rates-btn-link" href="https://jouuralafois.netlify.app" target="_blank" class="btn-secondary-scrapbook px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2">
                     <span>see rates &amp; more...</span>
                     <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                 </a>
@@ -359,20 +359,23 @@
         </div>
     </div>
 
-    <!-- MODAL: PDF Resource Attachment Uploader -->
+    <!-- MODAL: Full Attachment Uploader & Editor -->
     <div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white my-8">
+            <button onclick="closeResourceModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
             
-            <h3 class="text-3xl font-black text-center text-[#d2a3ad] tracking-wide mb-0">attach pdf / resource</h3>
-            <p class="text-xs text-center text-gray-500 mb-5">upload saved pdfs or worksheets for students</p>
+            <h3 id="res-modal-heading" class="text-3xl font-black text-center text-[#d2a3ad] tracking-wide mb-0">attach pdf / resource</h3>
+            <p class="text-xs text-center text-gray-500 mb-5">manage attachment details, assign categories, and edit full details</p>
 
             <form id="upload-resource-form" onsubmit="handleResourceUpload(event)" class="space-y-4 text-xs font-bold text-[#544e4f]">
+                <input type="hidden" id="editing-resource-id" value="">
+
                 <div>
                     <label class="block mb-1">resource title</label>
                     <input type="text" id="res-title" placeholder="e.g. food &amp; dining vocab practice" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md font-normal placeholder-gray-400 focus:outline-none focus:border-[#e5b3be]">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 gap-3">
                     <div>
                         <div class="flex justify-between items-center mb-1">
                             <label class="block">main category</label>
@@ -380,21 +383,21 @@
                                 <i class="fa-solid fa-plus"></i> add main
                             </button>
                         </div>
-                        <select id="res-category" onchange="updateSubcategoryDropdown()" class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md bg-white font-normal text-gray-700 focus:outline-none">
+                        <select id="res-category" onchange="updateSubcategoryCheckboxes()" class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md bg-white font-normal text-gray-700 focus:outline-none">
                             <!-- Dynamic Main Categories rendered via JS -->
                         </select>
                     </div>
 
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <label class="block">subcategory</label>
+                            <label class="block">select subsections (check multiple to assign to multiple subsections at once):</label>
                             <button type="button" onclick="addNewSubcategoryPrompt()" class="text-[10px] text-pink-600 hover:underline font-bold">
                                 <i class="fa-solid fa-plus"></i> add sub
                             </button>
                         </div>
-                        <select id="res-subcategory" class="w-full px-3 py-2 border border-[#e8d0d5] rounded-md bg-white font-normal text-gray-700 focus:outline-none">
-                            <!-- Dynamic Subcategories filtered per Main Category -->
-                        </select>
+                        <div id="subcategory-checkboxes-container" class="max-h-36 overflow-y-auto p-2.5 border border-[#e8d0d5] rounded-md bg-[#faf4e1] space-y-1.5 font-normal">
+                            <!-- Checkboxes for subsections dynamically populated -->
+                        </div>
                     </div>
                 </div>
 
@@ -429,7 +432,7 @@
                     <button type="button" onclick="closeResourceModal()" class="flex-1 py-2.5 border border-gray-300 bg-white rounded-md font-bold text-gray-600 hover:bg-gray-50 transition-all">
                         cancel
                     </button>
-                    <button type="submit" class="flex-1 py-2.5 bg-[#e5b3be] hover:bg-[#dfa4b1] text-white rounded-md font-bold shadow-sm transition-all">
+                    <button type="submit" id="res-submit-btn" class="flex-1 py-2.5 bg-[#e5b3be] hover:bg-[#dfa4b1] text-white rounded-md font-bold shadow-sm transition-all">
                         publish resource
                     </button>
                 </div>
@@ -503,14 +506,16 @@
             ]
         };
 
+        // Attached Resources with Multi-Subsection Array Support
         let resources = [
             {
                 id: 1,
                 title: "le passé composé (grammar guide)",
                 category: "grammar",
-                subcategory: "grammar_rules",
+                subcategories: ["grammar_rules", "tenses"],
                 desc: "complete guide to past tense conjugation.",
                 fileName: "passe_compose_guide.pdf",
+                link: "",
                 isPremium: false,
                 points: 15,
                 date: "2026-03-20"
@@ -519,9 +524,10 @@
                 id: 2,
                 title: "la nourriture et les repas (vocab list)",
                 category: "topic",
-                subcategory: "healthy_lifestyle",
+                subcategories: ["healthy_lifestyle", "vocab"],
                 desc: "full food and meal vocabulary practice.",
                 fileName: "food_and_dining_vocab.pdf",
+                link: "",
                 isPremium: true,
                 points: 20,
                 date: "2026-03-22"
@@ -607,20 +613,26 @@
                 alert("access restricted: only mihika can upload and attach files!");
                 return;
             }
+            document.getElementById('editing-resource-id').value = "";
+            document.getElementById('res-modal-heading').innerText = "attach pdf / resource";
+            document.getElementById('res-submit-btn').innerText = "publish resource";
+            document.getElementById('upload-resource-form').reset();
+            document.getElementById('file-label-text').innerText = "click or drag & drop pdf here";
+
             updateMainCategoryDropdown();
-            updateSubcategoryDropdown();
+            updateSubcategoryCheckboxes();
             document.getElementById('resource-modal').classList.remove('hidden');
         }
 
         function closeResourceModal() {
             document.getElementById('resource-modal').classList.add('hidden');
             document.getElementById('upload-resource-form').reset();
+            document.getElementById('editing-resource-id').value = "";
             document.getElementById('file-label-text').innerText = "click or drag & drop pdf here";
         }
 
         /* --- CATEGORY MANAGEMENT LOGIC --- */
 
-        // Add New Main Category
         function addNewMainCategoryPrompt() {
             if (!isCreatorDevice()) {
                 alert("access restricted: only mihika can add main categories!");
@@ -642,12 +654,11 @@
                 renderMainCategoryTabs();
                 updateMainCategoryDropdown();
                 document.getElementById('res-category').value = catId;
-                updateSubcategoryDropdown();
+                updateSubcategoryCheckboxes();
                 alert(`main category "${catName.trim()}" added!`);
             }
         }
 
-        // Add New Subcategory
         function addNewSubcategoryPrompt() {
             if (!isCreatorDevice()) {
                 alert("access restricted: only mihika can add subcategories!");
@@ -668,14 +679,12 @@
                 }
 
                 subcategories[currentCat].push(newSub);
-                updateSubcategoryDropdown();
-                document.getElementById('res-subcategory').value = newSub.id;
+                updateSubcategoryCheckboxes();
                 renderSubcategoryFilters();
                 alert(`subcategory "${subName}" added under ${currentCat}!`);
             }
         }
 
-        // Edit Subcategory Name
         function editSubcategory(catId, subId) {
             if (!isCreatorDevice()) return;
             const sub = (subcategories[catId] || []).find(s => s.id === subId);
@@ -685,16 +694,15 @@
             if (newName && newName.trim() !== "") {
                 sub.name = newName.trim();
                 renderSubcategoryFilters();
-                updateSubcategoryDropdown();
+                updateSubcategoryCheckboxes();
                 renderResources();
             }
         }
 
-        // Delete Subcategory
         function deleteSubcategory(catId, subId) {
             if (!isCreatorDevice()) return;
 
-            const hasWorksheets = resources.some(r => r.category === catId && r.subcategory === subId);
+            const hasWorksheets = resources.some(r => r.category === catId && (r.subcategories || []).includes(subId));
             if (hasWorksheets) {
                 alert("cannot delete this subcategory because it contains active worksheets! please delete or reassign those worksheets first.");
                 return;
@@ -706,7 +714,7 @@
                     currentSubcategoryFilter = 'all';
                 }
                 renderSubcategoryFilters();
-                updateSubcategoryDropdown();
+                updateSubcategoryCheckboxes();
                 renderResources();
             }
         }
@@ -717,13 +725,27 @@
             catSelect.innerHTML = mainCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         }
 
-        function updateSubcategoryDropdown() {
+        function updateSubcategoryCheckboxes(selectedSubs = []) {
             const currentCat = document.getElementById('res-category').value;
-            const subSelect = document.getElementById('res-subcategory');
-            if (!subSelect) return;
+            const container = document.getElementById('subcategory-checkboxes-container');
+            if (!container) return;
 
             const list = subcategories[currentCat] || [];
-            subSelect.innerHTML = list.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+            if (list.length === 0) {
+                container.innerHTML = `<span class="text-xs text-gray-400 italic">no subcategories in this main category. click "+ add sub" above!</span>`;
+                return;
+            }
+
+            container.innerHTML = list.map(s => {
+                const isChecked = selectedSubs.includes(s.id) ? 'checked' : '';
+                return `
+                    <label class="flex items-center gap-2 text-xs text-[#544e4f] cursor-pointer hover:bg-[#f2e7c9] p-1 rounded">
+                        <input type="checkbox" name="res-subcategory-check" value="${s.id}" ${isChecked} class="w-4 h-4 rounded text-pink-500 focus:ring-pink-400">
+                        <span>${s.name}</span>
+                    </label>
+                `;
+            }).join('');
         }
 
         function renderMainCategoryTabs() {
@@ -841,6 +863,30 @@
             }
         }
 
+        /* --- FULL ATTACHMENT CREATION AND EDITING --- */
+
+        function editResource(resId) {
+            if (!isCreatorDevice()) return;
+
+            const res = resources.find(r => r.id === resId);
+            if (!res) return;
+
+            document.getElementById('editing-resource-id').value = res.id;
+            document.getElementById('res-modal-heading').innerText = "edit full attachment";
+            document.getElementById('res-submit-btn').innerText = "save attachment changes";
+
+            document.getElementById('res-title').value = res.title;
+            document.getElementById('res-category').value = res.category;
+            document.getElementById('res-desc').value = res.desc || "";
+            document.getElementById('res-is-premium').checked = res.isPremium;
+            document.getElementById('res-link').value = res.link || "";
+            document.getElementById('file-label-text').innerText = res.fileName || "click or drag & drop pdf here";
+
+            updateSubcategoryCheckboxes(res.subcategories || []);
+
+            document.getElementById('resource-modal').classList.remove('hidden');
+        }
+
         function handleResourceUpload(e) {
             e.preventDefault();
             if (!isCreatorDevice()) {
@@ -848,30 +894,62 @@
                 return;
             }
 
+            const editingId = document.getElementById('editing-resource-id').value;
             const title = document.getElementById('res-title').value.trim();
             const category = document.getElementById('res-category').value;
-            const subcategory = document.getElementById('res-subcategory').value;
+
+            // Gather all checked subcategories for multi-subsection attachment
+            const selectedSubCheckboxes = document.querySelectorAll('input[name="res-subcategory-check"]:checked');
+            const selectedSubcategories = Array.from(selectedSubCheckboxes).map(cb => cb.value);
+
+            if (selectedSubcategories.length === 0) {
+                alert("please select at least one subsection for this attachment!");
+                return;
+            }
+
             const desc = document.getElementById('res-desc') ? document.getElementById('res-desc').value.trim() : "";
             const isPremium = document.getElementById('res-is-premium').checked;
             const link = document.getElementById('res-link').value.trim();
             const fileInput = document.getElementById('res-file-input');
-            const fileName = fileInput.files[0] ? fileInput.files[0].name : (link ? "google drive link" : "attached_worksheet.pdf");
 
-            const newResource = {
-                id: Date.now(),
-                title: title,
-                category: category,
-                subcategory: subcategory,
-                desc: desc,
-                fileName: fileName,
-                isPremium: isPremium,
-                points: isPremium ? 20 : 10,
-                date: new Date().toISOString().split('T')[0]
-            };
+            if (editingId) {
+                // UPDATE EXISTING ATTACHMENT IN FULL
+                const res = resources.find(r => r.id === parseInt(editingId));
+                if (res) {
+                    res.title = title;
+                    res.category = category;
+                    res.subcategories = selectedSubcategories;
+                    res.desc = desc;
+                    res.isPremium = isPremium;
+                    res.points = isPremium ? 20 : 10;
+                    res.link = link;
+                    if (fileInput.files && fileInput.files[0]) {
+                        res.fileName = fileInput.files[0].name;
+                    }
+                }
+                alert("attachment fully updated!");
+            } else {
+                // CREATE NEW ATTACHMENT
+                const fileName = fileInput.files[0] ? fileInput.files[0].name : (link ? "google drive link" : "attached_worksheet.pdf");
 
-            resources.unshift(newResource);
+                const newResource = {
+                    id: Date.now(),
+                    title: title,
+                    category: category,
+                    subcategories: selectedSubcategories,
+                    desc: desc,
+                    fileName: fileName,
+                    link: link,
+                    isPremium: isPremium,
+                    points: isPremium ? 20 : 10,
+                    date: new Date().toISOString().split('T')[0]
+                };
+
+                resources.unshift(newResource);
+                alert("attachment published successfully across selected subsections!");
+            }
+
             renderResources();
-            alert("resource successfully published!");
             closeResourceModal();
         }
 
@@ -885,7 +963,11 @@
             } else {
                 currentUser.credits += res.points;
                 updateUserUI();
-                alert(`download started! you earned +${res.points} pts!`);
+                if (res.link) {
+                    window.open(res.link, '_blank');
+                } else {
+                    alert(`download started! you earned +${res.points} pts!`);
+                }
             }
         }
 
@@ -893,31 +975,9 @@
             document.getElementById('premium-modal').classList.add('hidden');
         }
 
-        function editResource(resId) {
-            if (!isCreatorDevice()) return;
-            const res = resources.find(r => r.id === resId);
-            if (!res) return;
-
-            const newTitle = prompt("edit title:", res.title);
-            if (newTitle === null) return;
-
-            const newDesc = prompt("edit description:", res.desc);
-            if (newDesc === null) return;
-
-            const togglePremium = confirm("press OK to make this PREMIUM (paid), or CANCEL to make it FREE:");
-
-            res.title = newTitle.trim() || res.title;
-            res.desc = newDesc.trim();
-            res.isPremium = togglePremium;
-            res.points = togglePremium ? 20 : 10;
-
-            renderResources();
-            alert("worksheet updated successfully!");
-        }
-
         function deleteResource(resId) {
             if (!isCreatorDevice()) return;
-            if (confirm("are you sure you want to delete this resource?")) {
+            if (confirm("are you sure you want to delete this resource attachment?")) {
                 resources = resources.filter(r => r.id !== resId);
                 renderResources();
             }
@@ -930,7 +990,7 @@
             if (currentCategoryFilter !== 'all') {
                 filtered = filtered.filter(r => r.category === currentCategoryFilter);
                 if (currentSubcategoryFilter !== 'all') {
-                    filtered = filtered.filter(r => r.subcategory === currentSubcategoryFilter);
+                    filtered = filtered.filter(r => (r.subcategories || []).includes(currentSubcategoryFilter));
                 }
             }
 
@@ -943,47 +1003,54 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map(res => `
-                <div class="bg-white p-4 rounded-xl border-2 border-dashed border-[#e8d0d5] shadow-sm flex flex-col justify-between relative">
-                    <div>
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="bg-[#faf4e1] border border-[#dec38a] text-[#7a684d] text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                                ${res.category} • ${res.subcategory}
-                            </span>
-                            ${res.isPremium ? `
-                                <span class="text-[10px] text-amber-700 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded flex items-center gap-1">
-                                    <i class="fa-solid fa-lock text-[9px]"></i> premium
-                                </span>
-                            ` : `
-                                <span class="text-[10px] text-pink-600 font-bold bg-pink-50 px-2 py-0.5 rounded">
-                                    +${res.points} pts
-                                </span>
-                            `}
-                        </div>
-                        <h3 class="font-bold text-xs text-[#544e4f] mb-1">${res.title}</h3>
-                        ${res.desc ? `<p class="text-[11px] text-gray-500 mb-2">${res.desc}</p>` : ''}
-                        <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-3">
-                            <i class="fa-solid fa-file-pdf text-red-400"></i> ${res.fileName}
-                        </p>
-                    </div>
+            grid.innerHTML = filtered.map(res => {
+                const subNames = (res.subcategories || []).map(subId => {
+                    const found = (subcategories[res.category] || []).find(s => s.id === subId);
+                    return found ? found.name : subId;
+                }).join(', ');
 
-                    <div class="flex items-center justify-between pt-2 border-t border-dashed border-[#e8d0d5] gap-2">
-                        <button onclick="downloadResource(${res.id})" class="${res.isPremium ? 'btn-secondary-scrapbook' : 'btn-scrapbook'} px-3 py-1.5 text-[11px] font-bold rounded flex-1 flex items-center justify-center gap-1">
-                            ${res.isPremium ? '<i class="fa-solid fa-lock text-[10px]"></i><span>get access</span>' : '<i class="fa-solid fa-download text-[10px]"></i><span>download pdf</span>'}
-                        </button>
-                        ${isCreatorDevice() ? `
-                            <div class="flex items-center gap-1">
-                                <button onclick="editResource(${res.id})" title="edit resource" class="text-xs text-blue-500 hover:text-blue-700 p-1">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button onclick="deleteResource(${res.id})" title="delete resource" class="text-xs text-red-400 hover:text-red-600 p-1">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                return `
+                    <div class="bg-white p-4 rounded-xl border-2 border-dashed border-[#e8d0d5] shadow-sm flex flex-col justify-between relative">
+                        <div>
+                            <div class="flex justify-between items-start mb-2 gap-1">
+                                <span class="bg-[#faf4e1] border border-[#dec38a] text-[#7a684d] text-[10px] px-2 py-0.5 rounded font-bold uppercase truncate max-w-[200px]" title="${res.category} • ${subNames}">
+                                    ${res.category} • ${subNames}
+                                </span>
+                                ${res.isPremium ? `
+                                    <span class="text-[10px] text-amber-700 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded flex items-center gap-1 shrink-0">
+                                        <i class="fa-solid fa-lock text-[9px]"></i> premium
+                                    </span>
+                                ` : `
+                                    <span class="text-[10px] text-pink-600 font-bold bg-pink-50 px-2 py-0.5 rounded shrink-0">
+                                        +${res.points} pts
+                                    </span>
+                                `}
                             </div>
-                        ` : ''}
+                            <h3 class="font-bold text-xs text-[#544e4f] mb-1">${res.title}</h3>
+                            ${res.desc ? `<p class="text-[11px] text-gray-500 mb-2">${res.desc}</p>` : ''}
+                            <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-3">
+                                <i class="fa-solid fa-file-pdf text-red-400"></i> ${res.fileName}
+                            </p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-dashed border-[#e8d0d5] gap-2">
+                            <button onclick="downloadResource(${res.id})" class="${res.isPremium ? 'btn-secondary-scrapbook' : 'btn-scrapbook'} px-3 py-1.5 text-[11px] font-bold rounded flex-1 flex items-center justify-center gap-1">
+                                ${res.isPremium ? '<i class="fa-solid fa-lock text-[10px]"></i><span>get access</span>' : '<i class="fa-solid fa-download text-[10px]"></i><span>download pdf</span>'}
+                            </button>
+                            ${isCreatorDevice() ? `
+                                <div class="flex items-center gap-1">
+                                    <button onclick="editResource(${res.id})" title="edit attachment fully" class="text-xs text-blue-500 hover:text-blue-700 p-1">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button onclick="deleteResource(${res.id})" title="delete resource" class="text-xs text-red-400 hover:text-red-600 p-1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function saveSiteChanges() {
