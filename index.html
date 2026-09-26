@@ -114,7 +114,7 @@
             <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
                 <div id="user-badge-container" onclick="openProfileModal()" class="flex items-center gap-2 bg-[#f7f1f2] border border-[#e8d0d5] px-3 py-1.5 rounded-full text-xs cursor-pointer hover:bg-[#fae4e8] transition-all" title="click to view profile">
                     <span id="user-avatar-icon" class="w-6 h-6 rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xs">m</span>
-                    <span id="username-display" class="font-bold text-[#544e4f]">mihika (owner)</span>
+                    <span id="username-display" class="font-bold text-[#544e4f]">mihika</span>
                     <span id="user-lang-badge" class="hidden text-[10px] bg-pink-200 text-pink-800 px-1.5 py-0.5 rounded font-bold"></span>
                 </div>
                 <button id="auth-btn" onclick="openAuthModal()" class="text-xs underline text-[#a69598] hover:text-[#544e4f] font-bold">
@@ -382,150 +382,663 @@
         </div>
     </div>
 
-    <!-- MODAL: User Auth & Login/Signup Hub -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+    <!-- MODAL: Sign up / Log in / Guest / Owner -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div class="scrapbook-paper w-full max-w-md p-6 relative bg-white max-h-[90vh] overflow-y-auto">
             <button onclick="closeAuthModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            <h3 class="scrapbook-h2 text-2xl text-center mb-1">login / account</h3>
-            <p class="text-xs text-center text-gray-500 mb-4">sign in with username, create an account, or browse as guest</p>
-            
-            <div class="grid grid-cols-4 gap-1.5 mb-4 bg-[#faf4e1] p-1 rounded-lg border border-[#dec38a] text-[10px] font-bold">
-                <button type="button" onclick="switchAuthTab('new')" id="auth-tab-new" class="py-1.5 rounded bg-white shadow-sm text-center">new account</button>
-                <button type="button" onclick="switchAuthTab('existing')" id="auth-tab-existing" class="py-1.5 rounded text-center text-gray-600">existing</button>
-                <button type="button" onclick="switchAuthTab('guest')" id="auth-tab-guest" class="py-1.5 rounded text-center text-gray-600">guest</button>
-                <button type="button" onclick="switchAuthTab('owner')" id="auth-tab-owner" class="py-1.5 rounded text-center text-gray-600">owner</button>
-            </div>
-            
-            <!-- NEW ACCOUNT FORM -->
-            <form id="form-new-account" onsubmit="handleNewAccountSubmit(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">full name</label>
-                    <input type="text" id="new-name" placeholder="e.g. alex smith" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
-                </div>
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">username (unique - checked against database)</label>
-                    <input type="text" id="new-username" placeholder="e.g. alex_studies" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded" oninput="checkUsernameAvailability(this.value)">
-                    <p id="username-check-feedback" class="text-[10px] mt-1 text-gray-500"></p>
-                </div>
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">email address</label>
-                    <input type="email" id="new-email" placeholder="e.g. alex@example.com" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
-                </div>
-                <div>
-                    <label class="block font-bold text-gray-600 mb-2">select your interests (tick multiple, minimum 1)</label>
-                    <div id="interests-checkboxes-container" class="space-y-1.5 max-h-36 overflow-y-auto p-2 border border-[#e8d0d5] rounded bg-[#faf4e1]">
-                        <!-- Populated dynamically with checkboxes -->
-                    </div>
-                    <div class="mt-2">
-                        <label class="block font-bold text-gray-600 mb-1">other interest (type what you like)</label>
-                        <input type="text" id="new-other-interest" placeholder="e.g. astronomy, baking..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded bg-white">
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">account description / bio (optional)</label>
-                    <textarea id="new-bio" rows="2" placeholder="tell us a bit about your learning goals..." class="w-full px-3 py-2 border border-[#e8d0d5] rounded resize-none"></textarea>
-                </div>
-                <button type="submit" id="btn-create-account" class="btn-scrapbook w-full py-2.5 font-bold rounded mt-2">
-                    create new account &amp; sync to apps script ↗
-                </button>
-            </form>
-
-            <!-- EXISTING ACCOUNT FORM -->
-            <form id="form-existing-account" onsubmit="handleExistingAccountSubmit(event)" class="space-y-3 text-xs hidden">
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">username</label>
-                    <input type="text" id="exist-username" placeholder="enter your unique username" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
-                    <p class="text-[10px] text-gray-500 mt-1">no password needed for existing accounts—just your username! you will stay logged in automatically.</p>
-                </div>
-                <button type="submit" class="btn-secondary-scrapbook w-full py-2.5 font-bold rounded mt-2">
-                    log in with username
-                </button>
-            </form>
-
-            <!-- GUEST MODE TAB -->
-            <div id="form-guest-mode" class="space-y-3 text-xs hidden text-center py-4">
-                <div class="bg-[#faf4e1] border border-[#dec38a] p-4 rounded-lg">
-                    <i class="fa-solid fa-user-secret text-2xl text-[#7a684d] mb-2"></i>
-                    <p class="font-bold text-[#7a684d] mb-2">browse as guest</p>
-                    <p class="text-gray-600 text-[11px] mb-4">you can explore public pages and preview notices, but you'll need to create an account or log in to access resources and chatroom.</p>
-                    <button type="button" onclick="enterGuestMode()" class="btn-scrapbook px-6 py-2 font-bold rounded">
-                        continue as guest
-                    </button>
-                </div>
+            <h3 class="scrapbook-h2 text-2xl text-center mb-4">join the hub!</h3>
+            <div class="grid grid-cols-4 gap-1 bg-gray-100 rounded-lg p-1 mb-4 text-[11px] font-bold">
+                <button id="auth-tab-new" onclick="switchAuthTab('new')" class="py-1.5 rounded bg-white shadow-sm text-center font-bold text-gray-900">new</button>
+                <button id="auth-tab-existing" onclick="switchAuthTab('existing')" class="py-1.5 rounded text-center text-gray-600">login</button>
+                <button id="auth-tab-guest" onclick="switchAuthTab('guest')" class="py-1.5 rounded text-center text-gray-600">guest</button>
+                <button id="auth-tab-owner" onclick="switchAuthTab('owner')" class="py-1.5 rounded text-center text-gray-600">owner</button>
             </div>
 
-            <!-- OWNER LOGIN FORM -->
-            <form id="form-owner-account" onsubmit="handleOwnerLoginSubmit(event)" class="space-y-3 text-xs hidden">
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">owner username</label>
-                    <input type="text" id="owner-user-input" value="mihika (owner)" disabled class="w-full px-3 py-2 border border-[#e8d0d5] bg-gray-100 rounded text-gray-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-gray-600 mb-1">owner password</label>
-                    <input type="password" id="owner-pass-input" placeholder="enter owner password" required class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
-                </div>
-                <button type="submit" class="btn-scrapbook w-full py-2.5 font-bold rounded mt-2">
-                    log in as owner (mihika)
-                </button>
+            <form id="form-new-account" onsubmit="handleNewAccountSubmit(event)" class="space-y-2 text-xs">
+                <input id="new-name" required placeholder="your name" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <input id="new-username" required placeholder="choose a username" oninput="checkUsernameAvailability(this.value)" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <div id="username-check-feedback" class="text-[10px]"></div>
+                <input id="new-email" type="email" placeholder="email (optional)" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <textarea id="new-bio" placeholder="short bio (optional)" class="w-full px-3 py-2 border border-[#e8d0d5] rounded"></textarea>
+                <div class="text-[10px] font-bold text-gray-500 mb-1">pick your interests:</div>
+                <div id="interests-checkboxes-container" class="grid grid-cols-2 gap-1 mb-1"></div>
+                <input id="new-other-interest" placeholder="other interest (optional)" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <button type="submit" class="btn-scrapbook w-full py-2 rounded font-bold">create account</button>
+            </form>
+
+            <form id="form-existing-account" onsubmit="handleExistingAccountSubmit(event)" class="hidden space-y-2 text-xs">
+                <input id="exist-username" required placeholder="your username" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <button type="submit" class="btn-scrapbook w-full py-2 rounded font-bold">log in</button>
+                <p class="text-[10px] text-gray-400">we'll check the community database for your account.</p>
+            </form>
+
+            <div id="form-guest-mode" class="hidden text-xs text-center space-y-3">
+                <p class="text-gray-500">browse without an account (no credits, no saved profile).</p>
+                <button onclick="enterGuestMode()" class="btn-secondary-scrapbook w-full py-2 rounded font-bold">continue as guest</button>
+            </div>
+
+            <form id="form-owner-account" onsubmit="handleOwnerLoginSubmit(event)" class="hidden space-y-2 text-xs">
+                <input id="owner-pass-input" type="password" required placeholder="owner password" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <button type="submit" class="btn-scrapbook w-full py-2 rounded font-bold">unlock owner mode</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL: User Profile Viewer -->
+    <!-- MODAL: Profile view -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white text-center">
             <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            <div id="profile-avatar" class="w-16 h-16 rounded-full bg-pink-400 text-white font-bold text-2xl flex items-center justify-center mx-auto mb-3 shadow">m</div>
-            <h3 id="profile-name" class="scrapbook-h2 text-2xl mb-0">mihika</h3>
-            <p id="profile-username-display" class="text-xs text-gray-500 font-bold mb-1">@mihika (owner)</p>
-            <div id="profile-email-container" class="text-xs text-pink-600 font-bold mb-2 hidden"></div>
-            <div id="profile-level-badge" class="inline-block bg-pink-100 text-pink-700 text-xs px-2.5 py-1 rounded-full font-bold mb-3">Owner & Creator</div>
-            <div id="profile-interests-container" class="mb-3 text-[11px] text-gray-600 hidden">
-                <span class="font-bold">interests:</span> <span id="profile-interests-text"></span>
-            </div>
-            <div id="profile-bio-box" class="bg-[#faf4e1] border border-[#dec38a] rounded p-3 text-xs text-gray-700 mb-4 text-left">
-                owner and creator of jour à la fois.
-            </div>
-            <button onclick="closeProfileModal()" class="btn-scrapbook px-6 py-2 text-xs font-bold rounded">close</button>
+            <div id="profile-avatar" class="w-14 h-14 mx-auto rounded-full bg-[#e5b3be] text-white flex items-center justify-center font-bold text-xl mb-2">m</div>
+            <h3 id="profile-name" class="scrapbook-h2 text-xl">mihika</h3>
+            <div id="profile-username-display" class="text-[11px] text-gray-500 mb-1">@mihika</div>
+            <div id="profile-level-badge" class="inline-block bg-[#faf4e1] border border-[#dec38a] text-[10px] font-bold px-2 py-0.5 rounded-full mb-2">Owner</div>
+            <div id="profile-email-container" class="text-[11px] text-gray-500 mb-2"></div>
+            <div id="profile-bio-box" class="text-xs bg-[#f7f1f2] p-2 rounded-lg mb-2"></div>
+            <div id="profile-interests-container" class="hidden text-[11px] text-gray-600">interests: <span id="profile-interests-text"></span></div>
+            <button onclick="logoutUser()" class="mt-3 btn-secondary-scrapbook w-full py-2 rounded text-xs font-bold">log out</button>
         </div>
     </div>
 
-    <!-- MODAL: Interest Tags Manager (Owner feature) -->
+    <!-- MODAL: Interest tag manager (owner) -->
     <div id="interest-manager-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="scrapbook-paper w-full max-w-md p-6 relative bg-white">
+        <div class="scrapbook-paper w-full max-w-sm p-6 relative bg-white">
             <button onclick="closeInterestManagerModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            <h3 class="scrapbook-h2 text-2xl text-center mb-1">manage interest tags</h3>
-            <p class="text-xs text-center text-gray-500 mb-4">add or remove options available during account registration</p>
-            
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="new-interest-tag-input" placeholder="new interest name..." class="flex-1 px-3 py-2 text-xs border border-[#e8d0d5] rounded">
-                <button type="button" onclick="addNewInterestTag()" class="btn-scrapbook px-4 py-2 text-xs font-bold rounded">+ add</button>
+            <h3 class="scrapbook-h2 text-xl text-center mb-3">manage interest tags</h3>
+            <div id="interest-manager-list" class="space-y-1 text-xs mb-3 max-h-52 overflow-y-auto"></div>
+            <div class="flex gap-2">
+                <input id="new-interest-tag-input" placeholder="new tag..." class="flex-1 px-3 py-2 border border-[#e8d0d5] rounded text-xs">
+                <button onclick="addInterestTag()" class="btn-scrapbook px-3 py-2 rounded text-xs font-bold">add</button>
             </div>
-
-            <div id="manage-interests-list" class="space-y-2 max-h-48 overflow-y-auto mb-4 p-2 border border-[#e8d0d5] rounded bg-[#faf4e1] text-xs">
-                <!-- Rendered dynamically -->
-            </div>
-
-            <button onclick="closeInterestManagerModal()" class="btn-secondary-scrapbook w-full py-2 font-bold rounded text-xs">done</button>
         </div>
     </div>
 
-    <!-- MODAL: Full Attachment Uploader & Editor -->
-    <div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="scrapbook-paper w-full max-w-lg p-6 relative bg-white my-8">
+    <!-- MODAL: Add newsletter / resource (owner) -->
+    <div id="resource-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="scrapbook-paper w-full max-w-md p-6 relative bg-white">
             <button onclick="closeResourceModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-            <h3 id="res-modal-heading" class="text-3xl font-black text-center text-[#d2a3ad] tracking-wide mb-0">add newsletter / resource</h3>
-            <p class="text-xs text-center text-gray-500 mb-5">manage newsletter details, assign main category, multiple subcategories, and publish</p>
-            
-            <form id="upload-resource-form" onsubmit="handleResourceFormSubmit(event)" class="space-y-3 text-xs font-bold">
-                <input type="hidden" id="res-edit-id" value="">
-                <div>
-                    <label class="block mb-1">title</label>
-                </div>
+            <h3 class="scrapbook-h2 text-xl text-center mb-3">add newsletter / resource</h3>
+            <form onsubmit="handleAddResourceSubmit(event)" class="space-y-2 text-xs">
+                <input id="res-title" required placeholder="title" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <textarea id="res-desc" placeholder="short description" class="w-full px-3 py-2 border border-[#e8d0d5] rounded"></textarea>
+                <input id="res-link" placeholder="link (google drive, pdf url, etc.)" class="w-full px-3 py-2 border border-[#e8d0d5] rounded">
+                <div class="text-[10px] text-gray-500">will be added to: <span id="res-target-cat" class="font-bold"></span></div>
+                <button type="submit" class="btn-scrapbook w-full py-2 rounded font-bold">add resource</button>
             </form>
         </div>
     </div>
 
+<script>
+    // --- https://script.google.com/macros/library/d/1f-hQIL8Y4Ivc74ARdNWbKAtjwr6ceToYbfBaQQvPhfnl9i3b7pKmpg6W/2E ---
+    // (Extensions > Apps Script > Deploy > New deployment > Web app > Execute as: Me > Who has access: Anyone)
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1f-hQIL8Y4Ivc74ARdNWbKAtjwr6ceToYbfBaQQvPhfnl9i3b7pKmpg6W/2 ";
+
+    // --- LOCAL STORAGE STATE MANAGEMENT ---
+    let currentUser = JSON.parse(localStorage.getItem('jal_current_user')) || {
+        name: "mihika",
+        username: "mihika",
+        email: "mihikayashwanth@gmail.com",
+        isOwner: true,
+        credits: "infinity"
+    };
+
+    // Default interest tags list
+    let interestTagsList = JSON.parse(localStorage.getItem('jal_interest_tags')) || [
+        "literature", "languages", "art & design", "history", "philosophy", "science", "coding & tech", "music"
+    ];
+
+    // Resource hub categories/subcategories + attached resources
+    let categories = JSON.parse(localStorage.getItem('jal_categories')) || {
+        "language learning": ["grammar", "vocabulary", "listening"],
+        "psychology": ["theories", "study guides"],
+        "creative": ["moodboards", "fashion & design"]
+    };
+    let activeMain = Object.keys(categories)[0];
+    let activeSub = categories[activeMain][0] || null;
+    let resources = JSON.parse(localStorage.getItem('jal_resources')) || [];
+    let registeredUsers = JSON.parse(localStorage.getItem('jal_registered_users')) || [];
+    let chatMessages = JSON.parse(localStorage.getItem('jal_chat_messages')) || [];
+
+    // Initialize UI on load
+    document.addEventListener("DOMContentLoaded", () => {
+        updateAuthDisplay();
+        populateInterestsCheckboxes();
+        applyEditableText();
+        renderMainTabs();
+        renderSubTabs();
+        renderResourceCards();
+        renderScoreboard();
+        renderChatPreview();
+    });
+
+    // --- APPS SCRIPT / GOOGLE SHEET BRIDGE ---
+    async function callAppsScript(params) {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_")) return null; // not configured yet
+        try {
+            const url = APPS_SCRIPT_URL + "?" + new URLSearchParams(params).toString();
+            const res = await fetch(url);
+            return await res.json();
+        } catch (err) {
+            console.error("Apps Script error:", err);
+            return null;
+        }
+    }
+
+    // --- SITE TEXT EDITING (owner) ---
+    function applyEditableText() {
+        const saved = JSON.parse(localStorage.getItem('jal_site_text') || "{}");
+        document.querySelectorAll('[data-editable-id]').forEach(el => {
+            const id = el.getAttribute('data-editable-id');
+            if (saved[id]) el.innerText = saved[id];
+        });
+    }
+    function saveSiteChanges() {
+        const data = {};
+        document.querySelectorAll('[data-editable-id]').forEach(el => { data[el.getAttribute('data-editable-id')] = el.innerText; });
+        localStorage.setItem('jal_site_text', JSON.stringify(data));
+        alert("all changes are saved! ✅");
+    }
+
+    // --- CATEGORY / RESOURCE MANAGEMENT (owner) ---
+    function saveCategories() { localStorage.setItem('jal_categories', JSON.stringify(categories)); }
+    function saveResources() { localStorage.setItem('jal_resources', JSON.stringify(resources)); }
+
+    function renderMainTabs() {
+        const c = document.getElementById('main-category-tabs-container');
+        if (!c) return;
+        c.innerHTML = "";
+        Object.keys(categories).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = "tab-btn px-3 py-1.5 rounded-full border-2 border-[#e8d0d5] text-xs font-bold" + (key === activeMain ? " active" : "");
+            btn.innerText = key;
+            btn.onclick = () => { activeMain = key; activeSub = categories[key][0] || null; renderMainTabs(); renderSubTabs(); renderResourceCards(); };
+            c.appendChild(btn);
+        });
+    }
+    function renderSubTabs() {
+        const c = document.getElementById('sub-category-tabs-container');
+        const hint = document.getElementById('subcat-owner-hint');
+        if (!c) return;
+        c.innerHTML = "";
+        if (hint) hint.classList.toggle('hidden', !currentUser.isOwner);
+        (categories[activeMain] || []).forEach(sub => {
+            const btn = document.createElement('button');
+            btn.className = "sub-tab-btn px-2.5 py-1 rounded border border-[#dec38a] text-[11px]" + (sub === activeSub ? " active" : "");
+            btn.innerText = sub;
+            btn.onclick = () => { activeSub = sub; renderSubTabs(); renderResourceCards(); };
+            c.appendChild(btn);
+            if (currentUser.isOwner) {
+                const del = document.createElement('button');
+                del.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                del.className = "text-red-400 hover:text-red-600 text-[10px] -ml-1";
+                del.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm("delete subcategory '" + sub + "'?")) {
+                        categories[activeMain] = categories[activeMain].filter(s => s !== sub);
+                        resources = resources.filter(r => !(r.mainCat === activeMain && r.subCat === sub));
+                        if (activeSub === sub) activeSub = categories[activeMain][0] || null;
+                        saveCategories(); saveResources(); renderSubTabs(); renderResourceCards();
+                    }
+                };
+                c.appendChild(del);
+            }
+        });
+    }
+    function renderResourceCards() {
+        const grid = document.getElementById('resource-cards-grid');
+        if (!grid) return;
+        const matches = resources.filter(r => r.mainCat === activeMain && r.subCat === activeSub);
+        grid.innerHTML = matches.length ? matches.map(r => `
+            <div class="bg-[#faf4e1] border-2 border-dashed border-[#dec38a] rounded-lg p-3">
+                <div class="font-bold text-sm text-[#7a684d] mb-1">${r.title}</div>
+                <p class="text-xs text-gray-600 mb-2">${r.description || ""}</p>
+                ${r.link ? `<a href="${r.link}" target="_blank" class="text-[11px] font-bold text-pink-600 underline">open resource ↗</a>` : ""}
+                ${currentUser.isOwner ? `<button class="ml-2 text-[10px] text-red-400 hover:text-red-600" onclick="deleteResource('${r.id}')">delete</button>` : ""}
+            </div>`).join("") : '<p class="text-xs text-gray-400 italic col-span-2 text-center py-4">no resources here yet!</p>';
+    }
+    function deleteResource(id) { if (!currentUser.isOwner) return; resources = resources.filter(r => r.id !== id); saveResources(); renderResourceCards(); }
+
+    function addNewMainCategoryPrompt() {
+        if (!currentUser.isOwner) return;
+        const name = prompt("new main category name:");
+        if (!name) return;
+        const key = name.trim().toLowerCase();
+        if (categories[key]) return alert("that category already exists!");
+        categories[key] = [];
+        saveCategories();
+        activeMain = key; activeSub = null;
+        renderMainTabs(); renderSubTabs(); renderResourceCards();
+    }
+    function editCurrentMainCategory() {
+        if (!currentUser.isOwner) return;
+        const name = prompt("rename '" + activeMain + "' to:", activeMain);
+        if (!name) return;
+        const key = name.trim().toLowerCase();
+        categories[key] = categories[activeMain];
+        delete categories[activeMain];
+        resources.forEach(r => { if (r.mainCat === activeMain) r.mainCat = key; });
+        activeMain = key;
+        saveCategories(); saveResources();
+        renderMainTabs(); renderSubTabs(); renderResourceCards();
+    }
+    function deleteCurrentMainCategory() {
+        if (!currentUser.isOwner) return;
+        if (!confirm("delete '" + activeMain + "' and all its resources?")) return;
+        delete categories[activeMain];
+        resources = resources.filter(r => r.mainCat !== activeMain);
+        const remaining = Object.keys(categories);
+        activeMain = remaining[0] || null;
+        activeSub = activeMain ? (categories[activeMain][0] || null) : null;
+        saveCategories(); saveResources();
+        renderMainTabs(); renderSubTabs(); renderResourceCards();
+    }
+    function addNewSubCategoryPrompt() {
+        if (!currentUser.isOwner || !activeMain) return;
+        const name = prompt("new subcategory under '" + activeMain + "':");
+        if (!name) return;
+        categories[activeMain].push(name.trim().toLowerCase());
+        saveCategories();
+        renderSubTabs();
+    }
+    function requestSubcategoryPrompt() {
+        const topic = prompt("what topic/subcategory would you like to see added?");
+        if (!topic) return;
+        window.open("mailto:mihikayashwanth@gmail.com?subject=Topic%20Request&body=" + encodeURIComponent(topic + " (requested by " + currentUser.username + ")"));
+    }
+    function openResourceModal() {
+        if (!currentUser.isOwner) return alert("only the owner can add resources!");
+        document.getElementById('res-target-cat').innerText = activeMain + " → " + (activeSub || "(pick a subcategory first)");
+        document.getElementById('resource-modal').classList.remove('hidden');
+    }
+    function closeResourceModal() { document.getElementById('resource-modal').classList.add('hidden'); }
+    function handleAddResourceSubmit(e) {
+        e.preventDefault();
+        if (!activeSub) { alert("select a subcategory first!"); return; }
+        resources.push({ id: Date.now().toString(), mainCat: activeMain, subCat: activeSub, title: document.getElementById('res-title').value, description: document.getElementById('res-desc').value, link: document.getElementById('res-link').value });
+        saveResources();
+        closeResourceModal();
+        renderResourceCards();
+        document.getElementById('res-title').value = ""; document.getElementById('res-desc').value = ""; document.getElementById('res-link').value = "";
+    }
+
+    // --- INTEREST TAG MANAGER (owner) ---
+    function openInterestManagerModal() {
+        if (!currentUser.isOwner) return;
+        renderInterestManagerList();
+        document.getElementById('interest-manager-modal').classList.remove('hidden');
+    }
+    function closeInterestManagerModal() { document.getElementById('interest-manager-modal').classList.add('hidden'); }
+    function renderInterestManagerList() {
+        const list = document.getElementById('interest-manager-list');
+        list.innerHTML = "";
+        interestTagsList.forEach((tag, i) => {
+            const row = document.createElement('div');
+            row.className = "flex justify-between items-center bg-[#f7f1f2] px-2 py-1 rounded";
+            row.innerHTML = `<span>${tag}</span><button class="text-red-400 hover:text-red-600 text-[10px] font-bold" onclick="removeInterestTag(${i})">remove</button>`;
+            list.appendChild(row);
+        });
+    }
+    function addInterestTag() {
+        const input = document.getElementById('new-interest-tag-input');
+        const val = input.value.trim().toLowerCase();
+        if (!val || interestTagsList.includes(val)) return;
+        interestTagsList.push(val);
+        localStorage.setItem('jal_interest_tags', JSON.stringify(interestTagsList));
+        input.value = "";
+        renderInterestManagerList();
+        populateInterestsCheckboxes();
+    }
+    function removeInterestTag(i) {
+        interestTagsList.splice(i, 1);
+        localStorage.setItem('jal_interest_tags', JSON.stringify(interestTagsList));
+        renderInterestManagerList();
+        populateInterestsCheckboxes();
+    }
+
+    // --- CHATROOM ---
+    function toggleChatroomModal() {
+        const modal = document.getElementById('chat-modal');
+        modal.classList.toggle('hidden');
+        if (!modal.classList.contains('hidden')) renderFullChat();
+    }
+    function postChatMessage(e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+        chatMessages.push({ id: Date.now().toString(), user: currentUser.username, text, ts: Date.now() });
+        localStorage.setItem('jal_chat_messages', JSON.stringify(chatMessages));
+        input.value = "";
+        renderFullChat(); renderChatPreview();
+    }
+    function renderChatMsg(m) {
+        const isOwnerMsg = m.user === 'mihika';
+        return `<div class="flex justify-between items-start bg-white px-2.5 py-1.5 rounded border border-[#e8d0d5]">
+            <div><span class="font-bold text-[11px] ${isOwnerMsg ? 'text-pink-600' : 'text-[#544e4f]'}">@${m.user}${isOwnerMsg ? ' 👑' : ''}</span><p class="text-xs">${m.text}</p></div>
+            ${currentUser.isOwner ? `<button class="text-[10px] text-red-400 hover:text-red-600 shrink-0" onclick="deleteChatMessage('${m.id}')">✕</button>` : ''}
+        </div>`;
+    }
+    function renderFullChat() {
+        const c = document.getElementById('full-chat-messages');
+        if (!c) return;
+        c.innerHTML = chatMessages.length ? chatMessages.map(renderChatMsg).join("") : '<p class="text-xs text-gray-400 italic text-center">no messages yet, say hi!</p>';
+        c.scrollTop = c.scrollHeight;
+    }
+    function renderChatPreview() {
+        const c = document.getElementById('chat-preview-container');
+        if (!c) return;
+        const recent = chatMessages.slice(-3);
+        c.innerHTML = recent.length ? recent.map(renderChatMsg).join("") : '<p class="text-xs text-gray-400 italic">no messages yet!</p>';
+    }
+    function deleteChatMessage(id) {
+        if (!currentUser.isOwner) return;
+        chatMessages = chatMessages.filter(m => m.id !== id);
+        localStorage.setItem('jal_chat_messages', JSON.stringify(chatMessages));
+        renderFullChat(); renderChatPreview();
+    }
+
+    // --- SCOREBOARD ---
+    function renderScoreboard() {
+        const tbody = document.getElementById('scoreboard-tbody');
+        if (!tbody) return;
+        const list = [...registeredUsers].sort((a, b) => (b.credits || 0) - (a.credits || 0));
+        tbody.innerHTML = list.length ? list.map((u, i) => `<tr class="border-b border-[#f0e5c8]"><td class="py-1.5 px-2">#${i + 1}</td><td class="py-1.5 px-2 font-bold">@${u.username}</td><td class="py-1.5 px-2">${(u.interests || []).slice(0, 2).join(", ") || "-"}</td><td class="py-1.5 px-2 text-right font-black text-pink-600">${u.credits}</td></tr>`).join("") : '<tr><td colspan="4" class="py-3 text-center text-gray-400 italic">no members yet — be the first!</td></tr>';
+    }
+
+    // --- AUTH MODAL TABS SWITCHING ---
+    function switchAuthTab(tab) {
+        ['new', 'existing', 'guest', 'owner'].forEach(t => {
+            const tabBtn = document.getElementById(`auth-tab-${t}`);
+            if (tabBtn) tabBtn.className = "py-1.5 rounded text-center text-gray-600";
+            
+            const formId = t === 'new' ? 'form-new-account' : t === 'existing' ? 'form-existing-account' : t === 'guest' ? 'form-guest-mode' : 'form-owner-account';
+            const formEl = document.getElementById(formId);
+            if (formEl) formEl.classList.add('hidden');
+        });
+
+        const activeTabBtn = document.getElementById(`auth-tab-${tab}`);
+        if (activeTabBtn) activeTabBtn.className = "py-1.5 rounded bg-white shadow-sm text-center font-bold text-gray-900";
+        
+        const activeFormId = tab === 'new' ? 'form-new-account' : tab === 'existing' ? 'form-existing-account' : tab === 'guest' ? 'form-guest-mode' : 'form-owner-account';
+        const activeFormEl = document.getElementById(activeFormId);
+        if (activeFormEl) activeFormEl.classList.remove('hidden');
+    }
+
+    function openAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        if (modal) modal.classList.remove('hidden');
+        populateInterestsCheckboxes();
+    }
+
+    function closeAuthModal() {
+        const modal = document.getElementById('auth-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function openProfileModal() {
+        const nameEl = document.getElementById('profile-name');
+        const userDisplay = document.getElementById('profile-username-display');
+        const emailContainer = document.getElementById('profile-email-container');
+        const bioBox = document.getElementById('profile-bio-box');
+        const avatar = document.getElementById('profile-avatar');
+        const interestsContainer = document.getElementById('profile-interests-container');
+        const interestsText = document.getElementById('profile-interests-text');
+        const levelBadge = document.getElementById('profile-level-badge');
+
+        if (nameEl) nameEl.innerText = currentUser.name || currentUser.username;
+        if (userDisplay) userDisplay.innerText = `@${currentUser.username} ${currentUser.isOwner ? '(owner)' : ''}`;
+        
+        if (emailContainer) {
+            if (currentUser.email) {
+                emailContainer.innerText = currentUser.email;
+                emailContainer.classList.remove('hidden');
+            } else {
+                emailContainer.classList.add('hidden');
+            }
+        }
+
+        if (bioBox) {
+            bioBox.innerText = currentUser.bio || (currentUser.isOwner ? "owner and creator of jour à la fois." : "learning and exploring daily.");
+        }
+
+        if (avatar) {
+            avatar.innerText = (currentUser.username || currentUser.name || "m").charAt(0).toUpperCase();
+        }
+
+        if (interestsContainer && interestsText) {
+            if (currentUser.interests && currentUser.interests.length > 0) {
+                interestsText.innerText = currentUser.interests.join(", ");
+                interestsContainer.classList.remove('hidden');
+            } else {
+                interestsContainer.classList.add('hidden');
+            }
+        }
+
+        if (levelBadge) {
+            levelBadge.innerText = currentUser.isOwner ? "Owner & Creator" : "Member";
+        }
+
+        const modal = document.getElementById('profile-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+        const modal = document.getElementById('profile-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    // --- INTEREST TAGS MANAGEMENT ---
+    function populateInterestsCheckboxes() {
+        const container = document.getElementById('interests-checkboxes-container');
+        if (!container) return;
+        
+        container.innerHTML = "";
+        interestTagsList.forEach((tag, index) => {
+            const label = document.createElement('label');
+            label.className = "flex items-center space-x-2 text-xs text-gray-700 cursor-pointer";
+            label.innerHTML = `
+                <input type="checkbox" name="user-interest" value="${tag}" class="rounded border-[#e8d0d5] text-pink-500 focus:ring-0">
+                <span>${tag}</span>
+            `;
+            container.appendChild(label);
+        });
+    }
+
+    let usernameCheckTimeout;
+    function checkUsernameAvailability(val) {
+        clearTimeout(usernameCheckTimeout);
+        const feedback = document.getElementById('username-check-feedback');
+        if (!feedback) return;
+        const cleanVal = val.trim().toLowerCase();
+        if (!cleanVal) { feedback.innerText = ""; return; }
+        if (cleanVal === 'mihika' || cleanVal === 'admin' || cleanVal === 'guest') {
+            feedback.innerText = "❌ Username unavailable or reserved.";
+            feedback.className = "text-[10px] mt-1 text-red-500 font-bold";
+            return;
+        }
+        feedback.innerText = "checking...";
+        feedback.className = "text-[10px] mt-1 text-gray-400";
+        // cross-references your Google Sheet (via Apps Script) so duplicate usernames get caught
+        usernameCheckTimeout = setTimeout(async () => {
+            const result = await callAppsScript({ action: "checkUsername", username: cleanVal });
+            if (result === null) {
+                feedback.innerText = "✓ looks available (offline check — Apps Script not connected yet)";
+                feedback.className = "text-[10px] mt-1 text-green-600 font-bold";
+            } else if (result.available) {
+                feedback.innerText = "✓ Username is available!";
+                feedback.className = "text-[10px] mt-1 text-green-600 font-bold";
+            } else {
+                feedback.innerText = "❌ that username is already taken.";
+                feedback.className = "text-[10px] mt-1 text-red-500 font-bold";
+            }
+        }, 500);
+    }
+
+    // --- FORM HANDLERS ---
+    async function handleNewAccountSubmit(event) {
+        event.preventDefault();
+        const name = document.getElementById('new-name').value;
+        const username = document.getElementById('new-username').value.trim().toLowerCase();
+        const email = document.getElementById('new-email').value;
+        const otherInterest = document.getElementById('new-other-interest').value.trim();
+        const bio = document.getElementById('new-bio').value;
+
+        const checkedBoxes = document.querySelectorAll('input[name="user-interest"]:checked');
+        let selectedInterests = Array.from(checkedBoxes).map(cb => cb.value);
+        if (otherInterest) {
+            selectedInterests.push(otherInterest);
+        }
+
+        if (username === 'mihika' || username === 'admin') {
+            alert("This username is reserved. Please use a different username.");
+            return;
+        }
+
+        // final cross-reference against the Google Sheet before creating the account
+        const check = await callAppsScript({ action: "checkUsername", username });
+        if (check && check.available === false) {
+            alert("that username is already taken in the database — please pick another.");
+            return;
+        }
+
+        currentUser = {
+            name,
+            username,
+            email,
+            interests: selectedInterests,
+            bio,
+            isOwner: false,
+            credits: 10
+        };
+
+        localStorage.setItem('jal_current_user', JSON.stringify(currentUser));
+        registeredUsers.push(currentUser);
+        localStorage.setItem('jal_registered_users', JSON.stringify(registeredUsers));
+
+        // write the new account into the Google Sheet via Apps Script (silently no-ops until APPS_SCRIPT_URL is set)
+        await callAppsScript({ action: "registerUser", username, name, email, bio, interests: selectedInterests.join("|"), credits: 10 });
+
+        updateAuthDisplay();
+        renderScoreboard();
+        closeAuthModal();
+        alert(`Account created successfully! Welcome, ${name} ✨`);
+    }
+
+    async function handleExistingAccountSubmit(event) {
+        event.preventDefault();
+        const usernameInput = document.getElementById('exist-username');
+        if (!usernameInput) return;
+        const username = usernameInput.value.trim().toLowerCase();
+        if (!username) return;
+
+        if (username === 'mihika') {
+            alert("use the 'owner' tab to log in as mihika!");
+            return;
+        }
+
+        // look the username up in the Google Sheet via Apps Script
+        const result = await callAppsScript({ action: "getUser", username });
+        if (result && result.found) {
+            currentUser = {
+                name: result.name || username,
+                username,
+                email: result.email || "",
+                interests: result.interests ? String(result.interests).split("|") : [],
+                bio: result.bio || "",
+                isOwner: false,
+                credits: result.credits !== undefined ? Number(result.credits) : 25
+            };
+        } else if (result && result.found === false) {
+            alert("we couldn't find that username in the database — check the spelling or create a new account!");
+            return;
+        } else {
+            // Apps Script not connected yet — fall back to a local-only session
+            currentUser = { name: username, username, email: `${username}@example.com`, isOwner: false, credits: 25, interests: [], bio: "" };
+        }
+        localStorage.setItem('jal_current_user', JSON.stringify(currentUser));
+
+        updateAuthDisplay();
+        closeAuthModal();
+        alert(`Welcome back, @${username}!`);
+    }
+
+    function handleOwnerLoginSubmit(event) {
+        event.preventDefault();
+        const passInput = document.getElementById('owner-pass-input');
+        if (!passInput) return;
+        const pass = passInput.value;
+
+        if (pass === "whatdahelliante3008") {
+            currentUser = {
+                name: "mihika",
+                username: "mihika",
+                email: "mihikayashwanth@gmail.com",
+                isOwner: true,
+                credits: 999
+            };
+            localStorage.setItem('jal_current_user', JSON.stringify(currentUser));
+            updateAuthDisplay();
+            closeAuthModal();
+            alert("Owner mode activated successfully! 💖");
+        } else {
+            alert("Incorrect owner password!");
+        }
+    }
+
+    function enterGuestMode() {
+        currentUser = { 
+            name: "Guest", 
+            username: "guest", 
+            isOwner: false, 
+            credits: 0,
+            interests: [],
+            bio: "Browsing as guest."
+        };
+        localStorage.setItem('jal_current_user', JSON.stringify(currentUser));
+        updateAuthDisplay();
+        closeAuthModal();
+    }
+
+    function logoutUser() {
+        currentUser = { name: "Guest", username: "guest", isOwner: false, credits: 0, interests: [], bio: "" };
+        localStorage.setItem('jal_current_user', JSON.stringify(currentUser));
+        updateAuthDisplay();
+        renderSubTabs();
+        closeProfileModal();
+    }
+
+    function updateAuthDisplay() {
+        const usernameDisplay = document.getElementById('username-display');
+        const avatarIcon = document.getElementById('user-avatar-icon');
+        const editorBtn = document.getElementById('editor-toggle-btn');
+        const creditsBalance = document.getElementById('credits-balance');
+        const catToolbar = document.getElementById('category-manager-toolbar');
+
+        if (usernameDisplay) {
+            usernameDisplay.innerText = `${currentUser.username} ${currentUser.isOwner ? '(owner)' : ''}`;
+        }
+        if (avatarIcon) {
+            avatarIcon.innerText = (currentUser.username || "m").charAt(0).toUpperCase();
+        }
+        if (creditsBalance) {
+            creditsBalance.innerText = currentUser.credits === 'infinity' ? '∞' : currentUser.credits;
+        }
+        if (editorBtn) editorBtn.classList.toggle('hidden', !currentUser.isOwner);
+        if (catToolbar && !document.body.classList.contains('edit-mode-active')) catToolbar.classList.add('hidden');
+    }
+
+    function toggleEditMode() {
+        if (!currentUser.isOwner) {
+            alert("Only the site owner (Mihika) can enter edit mode!");
+            return;
+        }
+        const banner = document.getElementById('edit-mode-banner');
+        const catToolbar = document.getElementById('category-manager-toolbar');
+        const nowEditing = document.body.classList.toggle('edit-mode-active');
+        if (banner) banner.classList.toggle('hidden');
+        if (catToolbar) catToolbar.classList.toggle('hidden');
+        document.querySelectorAll('[data-editable-id]').forEach(el => el.setAttribute('contenteditable', nowEditing));
+    }
+</script>
     <!-- Javascript functions for handling the new pop-up -->
     <script>
         function openPsychologyBookModal() {
