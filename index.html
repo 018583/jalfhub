@@ -6,6 +6,8 @@
     <title>jour à la fois | newsletter & resource hub</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    \
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Scrapbook Aesthetic Styles -->
@@ -526,6 +528,50 @@
         // Apps Script Web App Endpoint URL for real-time synchronization
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzL5v1pXzK9j8F3W8q_VzM5T7L9Z1X2C3V4B5N6M7L8K9J0H1G2F3D4S5A6/exec';
 
+        // Replace your existing saveSiteChanges function with this:
+async function saveSiteChanges() {
+    isEditMode = false;
+    document.body.classList.remove('edit-mode-active');
+    document.getElementById('edit-mode-banner').classList.add('hidden');
+    document.getElementById('editor-toggle-text').innerText = 'edit site (owner)';
+    
+    // Gather all editable text fields live from the DOM
+    document.querySelectorAll('[data-editable-id]').forEach(el => {
+        const id = el.getAttribute('data-editable-id');
+        siteData.editableTexts[id] = el.innerHTML;
+    });
+
+    // Save locally
+    persistState();
+
+    // AUTO-SAVE PERMANENTLY TO GOOGLE SHEETS
+    try {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.includes('AKfycbz')) {
+            await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'save_site_data',
+                    payload: {
+                        categories: siteData.categories,
+                        resources: siteData.resources,
+                        editableTexts: siteData.editableTexts
+                    }
+                })
+            });
+            alert('success! your site changes have been saved permanently to the cloud.');
+        } else {
+            alert('changes saved locally!');
+        }
+    } catch (error) {
+        console.error('Cloud save failed:', error);
+        alert('saved locally, but cloud sync failed.');
+    }
+
+    renderCategories();
+    renderResources();
+}
         // Initial Data Store with natural case preservation
         const defaultCategories = {
             "b1 french": ["grammar & verbs", "vocabulary lists", "practice quizzes", "listening notes"],
@@ -595,6 +641,32 @@ setInterval(() => {
             renderResources();
             renderInterestCheckboxes();
             renderManageInterestTagsList();
+            window.onload = async function() {
+    // Try loading permanent changes from Google Sheet first
+    try {
+        if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.includes('AKfycbz')) {
+            const response = await fetch(`${APPS_SCRIPT_URL}?action=save_site_data`);
+            const cloudData = await response.json();
+            if (cloudData && Object.keys(cloudData).length > 0) {
+                if (cloudData.categories) siteData.categories = cloudData.categories;
+                if (cloudData.resources) siteData.resources = cloudData.resources;
+                if (cloudData.editableTexts) siteData.editableTexts = cloudData.editableTexts;
+            }
+        }
+    } catch(e) {
+        console.log('Using local fallback data');
+    }
+
+    loadSavedEditableTexts();
+    renderUserBadge();
+    renderScoreboard();
+    renderChatPreview();
+    renderFullChatMessages();
+    renderCategories();
+    renderResources();
+    renderInterestCheckboxes();
+    renderManageInterestTagsList();
+};
         };
 
         // Sync with Google Apps Script in background
